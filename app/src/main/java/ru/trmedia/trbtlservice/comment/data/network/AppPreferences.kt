@@ -1,4 +1,4 @@
-package ru.trmedia.trbtlservice.comment.data
+package ru.trmedia.trbtlservice.comment.data.network
 
 import android.content.Context
 import android.content.SharedPreferences

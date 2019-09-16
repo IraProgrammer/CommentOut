@@ -10,8 +10,8 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import ru.trmedia.trbtlservice.comment.data.ApiKeyInterceptor
-import ru.trmedia.trbtlservice.comment.data.InstaApi
+import ru.trmedia.trbtlservice.comment.data.network.ApiKeyInterceptor
+import ru.trmedia.trbtlservice.comment.data.network.InstaApi
 import ru.trmedia.trbtlservice.comment.di.scope.PerApplication
 
 @Module

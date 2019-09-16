@@ -1,4 +1,4 @@
-package ru.trmedia.trbtlservice.comment
+package ru.trmedia.trbtlservice.comment.domain
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
@@ -17,4 +17,4 @@ data class User(
     @SerializedName("profile_picture")
     @Expose
     var profilePictureUrl: String
-    )
+)
