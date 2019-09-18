@@ -49,7 +49,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     fun getRandom(context: Context, key: String, bound: Int): Int {
         var set = AppPreferences(context).getSet(key)
 
-        if (set.size == bound + 1) {
+        if (set.size == bound) {
             set = HashSet()
             AppPreferences(context).clearSet(key)
         }
