@@ -1,25 +1,25 @@
 package ru.trmedia.trbtlservice.comment.presentation.follows
 
+import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import androidx.core.animation.addListener
 import kotlinx.android.synthetic.main.activity_insta_login.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
-import ru.trmedia.trbtlservice.comment.R
-import ru.trmedia.trbtlservice.comment.domain.UserWrap
 import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
 import ru.trmedia.trbtlservice.comment.domain.Follow
+import ru.trmedia.trbtlservice.comment.domain.UserWrap
 import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
 
 
@@ -31,7 +31,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_insta_login)
+        setContentView(ru.trmedia.trbtlservice.comment.R.layout.activity_insta_login)
 
         initializeWebView()
 
@@ -48,9 +48,18 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             .putString(AppPreferences.USER_NAME, userWrap.user.username)
         Toast.makeText(baseContext, userWrap.user.username, Toast.LENGTH_LONG).show()
 
-        flProgress.visibility = View.VISIBLE
+        llProgress.visibility = View.VISIBLE
 
-        wvInsta.loadUrl(getString(R.string.redirect_base_url) + userWrap.user.username)
+        val progressAnimator = ObjectAnimator.ofInt(pbHorizontal, "progress", 0, 10000)
+        progressAnimator.addListener(onEnd = {
+            pbHorizontal.visibility = View.GONE
+            tvText.text = "Готово!"
+        })
+        progressAnimator.duration = 3200
+        progressAnimator.interpolator = LinearInterpolator()
+        progressAnimator.start()
+
+        wvInsta.loadUrl(getString(ru.trmedia.trbtlservice.comment.R.string.redirect_base_url) + userWrap.user.username)
     }
 
     fun onTokenReceived(auth_token: String?) {
@@ -64,6 +73,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     override fun startGame() {
         val intent = Intent(baseContext, GameActivity::class.java)
         startActivity(intent)
+        finish()
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -72,8 +82,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         wvInsta.settings.domStorageEnabled = true
         wvInsta.loadUrl(
             "https://api.instagram.com/" + "oauth/authorize/?client_id=" +
-                    getString(R.string.client_id) +
-                    "&redirect_uri=" + getString(R.string.redirect_base_url) +
+                    getString(ru.trmedia.trbtlservice.comment.R.string.client_id) +
+                    "&redirect_uri=" + getString(ru.trmedia.trbtlservice.comment.R.string.redirect_base_url) +
                     "&response_type=token&display=touch&scope=basic"
         )
 
@@ -107,6 +117,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                                         val b = ArrayList<String>()
 
+                                        val p = ArrayList<String>()
+
                                         val res = ArrayList<Follow>()
 
                                         val s = html.split("\"")
@@ -122,21 +134,22 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                             if (s[i].equals(" type=\\")) {
                                                 b.add(s[i + 2])
                                             }
+                                            if (s[i].equals(" src=\\")) {
+                                                p.add(s[i + 1].substring(0, s[i + 1].length - 1))
+                                            }
                                         }
 
                                         for (i in b.indices) {
                                             if (b[i].contains("Подписки")) {
-                                                res.add(Follow(0, a[i], ""))
+                                                res.add(Follow(0, a[i], p[i]))
                                             }
                                         }
 
                                         if (res.size > 0) instaLoginPresenter.saveFollowsToDb(res)
 
-                                        flProgress.visibility = View.GONE
-
                                     }
                                 })
-                        }, 30000)
+                        }, 3000)
 
                     }
                     url.equals(

@@ -1,11 +1,11 @@
 package ru.trmedia.trbtlservice.comment
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import ru.trmedia.trbtlservice.comment.di.AppComponent
 import ru.trmedia.trbtlservice.comment.di.DaggerAppComponent
 import ru.trmedia.trbtlservice.comment.di.module.ContextModule
 
-class App : Application() {
+class App : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()

@@ -8,6 +8,9 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_game.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
@@ -24,7 +27,12 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
 
-        btnRefresh.setOnClickListener{v -> gamePresenter.getRandomUser()}
+        MobileAds.initialize(this)
+
+        val adRequest = AdRequest.Builder().build()
+        adView.loadAd(adRequest)
+
+        btnRefresh.setOnClickListener { v -> gamePresenter.getRandomUser(baseContext) }
     }
 
     fun openUserInInsta(username: String) {
@@ -47,11 +55,17 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     override fun onShowRandomUser(follow: Follow) {
+
         tvUsername.setText(follow.username)
 
         tvUsername.setOnClickListener { v -> openUserInInsta(follow.username) }
 
         tvComment.text = "comment"
+
+        Glide.with(baseContext)
+            .load(follow.profilePictureUrl)
+            .placeholder(R.drawable.ic_user)
+            .into(ivAvatar)
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("label", tvComment.text.toString())

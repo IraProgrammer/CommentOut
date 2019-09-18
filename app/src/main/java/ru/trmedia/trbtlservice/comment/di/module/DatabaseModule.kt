@@ -19,7 +19,7 @@ class DatabaseModule {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java, DATABASE_NAME
-        ).build()
+        ).allowMainThreadQueries().build()
     }
 
     @Provides

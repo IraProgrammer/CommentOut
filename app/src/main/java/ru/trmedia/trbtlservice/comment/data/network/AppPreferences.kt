@@ -23,6 +23,24 @@ class AppPreferences(context: Context) {
         editor.apply()
     }
 
+    fun getSet(key: String): MutableSet<String> {
+        return preferences.getStringSet(key, null) ?: HashSet()
+    }
+
+    fun addToSet(key: String, value: String) {
+        val editor = preferences.edit()
+        val set = getSet(key)
+        set.add(value)
+        editor.putStringSet(key, set)
+        editor.apply()
+    }
+
+    fun clearSet(key: String) {
+        val editor = preferences.edit()
+        editor.putStringSet(key, HashSet())
+        editor.apply()
+    }
+
     fun clear() {
         val editor = preferences.edit()
         editor.clear()
@@ -31,9 +49,10 @@ class AppPreferences(context: Context) {
 
     companion object {
         val APP_PREFERENCES_FILE_NAME = "userdata"
-        val USER_ID = "userID"
         val TOKEN = "token"
-        val PROFILE_PIC = "profile_pic"
         val USER_NAME = "username"
+        val USERS_SET = "usersSet"
+        val COMMENTS_SET = "commentsSet"
+        val PUNISHMENT_SET = "punishmentSet"
     }
 }

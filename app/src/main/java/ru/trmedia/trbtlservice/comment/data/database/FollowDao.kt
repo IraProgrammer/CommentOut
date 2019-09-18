@@ -13,6 +13,9 @@ interface FollowDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(follows: List<Follow>): Completable
 
+    @Query("DELETE FROM Follow")
+    fun delete()
+
     @Query("SELECT * FROM Follow")
     fun getAll(): Single<List<Follow>>
 }

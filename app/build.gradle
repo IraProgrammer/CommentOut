@@ -12,6 +12,7 @@ android {
         applicationId "ru.trmedia.trbtlservice.comment"
         minSdkVersion 14
         targetSdkVersion 29
+        multiDexEnabled true
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -33,6 +34,11 @@ dependencies {
 
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+
+    //AdMob
+    implementation 'com.google.android.gms:play-services-ads:18.2.0'
 
     //moxy
     implementation 'com.github.moxy-community:moxy:1.0.13'
