@@ -23,6 +23,16 @@ class AppPreferences(context: Context) {
         editor.apply()
     }
 
+    fun getBoolean(key: String): Boolean {
+        return preferences.getBoolean(key, true)
+    }
+
+    fun putBoolean(key: String, value: Boolean) {
+        val editor = preferences.edit()
+        editor.putBoolean(key, value)
+        editor.apply()
+    }
+
     fun getSet(key: String): MutableSet<String> {
         return preferences.getStringSet(key, null) ?: HashSet()
     }
@@ -54,5 +64,6 @@ class AppPreferences(context: Context) {
         val USERS_SET = "usersSet"
         val COMMENTS_SET = "commentsSet"
         val PUNISHMENT_SET = "punishmentSet"
+        val SHOW_SAFE = "showSafe"
     }
 }

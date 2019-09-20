@@ -5,9 +5,11 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -23,6 +25,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @InjectPresenter
     lateinit var gamePresenter: GamePresenter
 
+    var count = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game)
@@ -32,7 +36,66 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
-        btnRefresh.setOnClickListener { v -> gamePresenter.getRandomUser(baseContext) }
+        ivHelp.setOnClickListener { v ->
+            AlertDialog.Builder(this)
+                .setView(R.layout.dialog_rules)
+                .setTitle("Правила игры")
+                .setPositiveButton(
+                    "ponyatno"
+                ) { _, _ ->
+                }
+                .create().show()
+        }
+
+        btnRefresh.setOnClickListener { v ->
+
+            if (cvComment.cardBackgroundColor.equals(
+                    ColorStateList.valueOf(
+                        resources.getColor(R.color.colorAccent)
+                    )
+                )
+            ) count++
+
+            tvPoints.text = count.toString()
+
+            gamePresenter.getRandomUser(baseContext)
+            cvPunishment.setCardBackgroundColor(
+                ColorStateList.valueOf(
+                    resources.getColor(R.color.white)
+                )
+            )
+            cvComment.setCardBackgroundColor(
+                ColorStateList.valueOf(
+                    resources.getColor(R.color.white)
+                )
+            )
+        }
+
+        cvComment.setOnClickListener { v ->
+            cvPunishment.setCardBackgroundColor(
+                ColorStateList.valueOf(
+                    resources.getColor(R.color.white)
+                )
+            )
+            cvComment.setCardBackgroundColor(
+                ColorStateList.valueOf(
+                    resources.getColor(R.color.colorAccent)
+                )
+            )
+        }
+
+        cvPunishment.setOnClickListener { v ->
+            cvComment.setCardBackgroundColor(
+                ColorStateList.valueOf(
+                    resources.getColor(R.color.white)
+                )
+            )
+            cvPunishment.setCardBackgroundColor(
+                ColorStateList.valueOf(
+                    resources.getColor(R.color.colorAccent)
+                )
+            )
+        }
     }
 
     fun openUserInInsta(username: String) {
@@ -52,6 +115,27 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         val list =
             packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         return list.size > 0
+    }
+
+    override fun onBackPressed() {
+        AlertDialog.Builder(this)
+            .setMessage("Сохранить игру?")
+            .setTitle("Ня! :3")
+            .setPositiveButton(
+                "da"
+            ) { dialog, which ->
+                Toast.makeText(baseContext, "ok", Toast.LENGTH_SHORT).show()
+                super.onBackPressed()
+                dialog.dismiss()
+            }
+            .setNegativeButton(
+                "net"
+            ) { dialog, which ->
+                Toast.makeText(baseContext, "net", Toast.LENGTH_SHORT).show()
+                super.onBackPressed()
+                dialog.dismiss()
+            }
+            .create().show()
     }
 
     override fun onShowRandomUser(follow: Follow) {

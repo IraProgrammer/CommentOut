@@ -6,11 +6,60 @@
     android:layout_height="match_parent"
     tools:context=".presentation.follows.InstaLoginActivity">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/tbTop"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:text="Баллы:" />
+
+            <TextView
+                android:id="@+id/tvPoints"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="8dp"
+                android:layout_toRightOf="@+id/tvText"
+                android:text="0" />
+
+            <ImageView
+                android:id="@+id/ivNewGame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:layout_toLeftOf="@+id/ivHelp"
+                android:src="@drawable/ic_new_game" />
+
+            <ImageView
+                android:id="@+id/ivHelp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_help" />
+
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/adView"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/tbTop">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -104,7 +153,7 @@
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:adSize="SMART_BANNER"

@@ -6,11 +6,15 @@ apply plugin: 'kotlin-android-extensions'
 
 apply plugin: 'kotlin-kapt'
 
+apply plugin: 'io.fabric'
+
+apply plugin: 'com.google.gms.google-services'
+
 android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "ru.trmedia.trbtlservice.comment"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 29
         multiDexEnabled true
         versionCode 1
@@ -18,8 +22,12 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
+
+        debug {
+        }
         release {
-            minifyEnabled false
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -68,6 +76,10 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.2.0-rc01'
     implementation 'androidx.room:room-rxjava2:2.2.0-rc01'
     kapt 'androidx.room:room-compiler:2.2.0-rc01'
+
+    //firebase
+    implementation 'com.google.firebase:firebase-core:17.2.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

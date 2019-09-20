@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "519008687304",
+    "firebase_url": "https://commentsapp-889cd.firebaseio.com",
+    "project_id": "commentsapp-889cd",
+    "storage_bucket": "commentsapp-889cd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:519008687304:android:8d57d3781fb11175f001fd",
+        "android_client_info": {
+          "package_name": "ru.trmedia.trbtlservice.comment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "519008687304-ovosvr1bqacbg352pepa02k22q2o0s9p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1G39EjWf8Vo3Wc2sUni3wFJox_1FSL6g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "519008687304-ovosvr1bqacbg352pepa02k22q2o0s9p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

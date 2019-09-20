@@ -12,12 +12,21 @@ import android.view.animation.LinearInterpolator
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.CheckBox
+import android.widget.RadioButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.animation.addListener
+import com.google.android.material.tabs.TabLayout
+import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.activity_insta_login.*
+import kotlinx.android.synthetic.main.activity_insta_login.tvText
+import kotlinx.android.synthetic.main.dialog_safetly.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
+import ru.trmedia.trbtlservice.comment.R
 import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
+import ru.trmedia.trbtlservice.comment.data.network.AppPreferences.Companion.SHOW_SAFE
 import ru.trmedia.trbtlservice.comment.domain.Follow
 import ru.trmedia.trbtlservice.comment.domain.UserWrap
 import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
@@ -31,16 +40,39 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(ru.trmedia.trbtlservice.comment.R.layout.activity_insta_login)
+        setContentView(R.layout.activity_insta_login)
 
-        initializeWebView()
+        val l = layoutInflater.inflate(R.layout.dialog_safetly, null)
 
-        if (AppPreferences(baseContext).getString(AppPreferences.TOKEN) != null)
-            onTokenReceived(
-                AppPreferences(baseContext).getString(
-                    AppPreferences.TOKEN
-                )
-            )
+        val chb = l.findViewById<CheckBox>(R.id.chbDontShowAgain)
+
+        if (AppPreferences(baseContext).getBoolean(SHOW_SAFE)) {
+
+            AlertDialog.Builder(this)
+                .setView(l)
+                .setCancelable(false)
+                .setPositiveButton(
+                    "ponyatno"
+                ) { dialog, which ->
+                    if (chb.isChecked) {
+                        AppPreferences(baseContext).putBoolean(SHOW_SAFE, false)
+                    }
+                    initializeWebView()
+                    if (AppPreferences(baseContext).getString(AppPreferences.TOKEN) != null)
+                        onTokenReceived(
+                            AppPreferences(baseContext).getString(
+                                AppPreferences.TOKEN
+                            )
+                        )
+                }
+                .create().show()
+        }
+
+        btnStartGame.setOnClickListener { v ->
+            val intent = Intent(baseContext, GameActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     override fun onShowInfo(userWrap: UserWrap) {
@@ -55,7 +87,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             pbHorizontal.visibility = View.GONE
             tvText.text = "Готово!"
         })
-        progressAnimator.duration = 3200
+        progressAnimator.duration = 12000
         progressAnimator.interpolator = LinearInterpolator()
         progressAnimator.start()
 
@@ -71,9 +103,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun startGame() {
-        val intent = Intent(baseContext, GameActivity::class.java)
-        startActivity(intent)
-        finish()
+        btnStartGame.visibility = View.VISIBLE
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -100,11 +130,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                         ) + "/followers/"
                     ) -> {
 
-//                        wvInsta.evaluateJavascript(
-//                            "(function() { return ('<html>'+document.scrollToElement('d7ByH')+'</html>'); })();",
-//                            null
-//                        )
-
                         Handler().postDelayed({
                             wvInsta.evaluateJavascript(
                                 "(function(){return window.document.body.outerHTML})();",
@@ -125,7 +150,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                                         for (i in s.indices) {
                                             if (s[i].equals(" title=\\")) {
-                                                if (!s[i + 1].contains("Подтвержденный")) {
+                                                if (!s[i + 1].contains("Подтвержденный") && !s[i + 1].contains(
+                                                        "Verified"
+                                                    )
+                                                ) {
                                                     a.add(
                                                         s[i + 1].substring(0, s[i + 1].length - 1)
                                                     )
@@ -140,7 +168,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                         }
 
                                         for (i in b.indices) {
-                                            if (b[i].contains("Подписки")) {
+                                            if (b[i].contains("Подписки") || b[i].contains("Following")) {
                                                 res.add(Follow(0, a[i], p[i]))
                                             }
                                         }
@@ -149,7 +177,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                                     }
                                 })
-                        }, 3000)
+                        }, 10000)
 
                     }
                     url.equals(
