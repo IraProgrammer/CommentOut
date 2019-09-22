@@ -33,7 +33,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
-            android:text="Пожалуйста, подождите, идёт импорт подписок" />
+            android:text="@string/please_wait" />
 
         <ProgressBar
             android:id="@+id/pbHorizontal"
@@ -42,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
+            android:progressDrawable="@drawable/gradient"
             android:indeterminate="false"
             android:max="10000"
             android:progress="0" />
@@ -53,6 +54,28 @@
             android:layout_height="wrap_content"
             android:text="Начать игру!"
             android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llNoNetwork"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/tvCheckNetwork"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="@string/please_check_internet" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

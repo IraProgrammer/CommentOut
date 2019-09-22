@@ -18,4 +18,6 @@
         Ваши баллы суммируются в верхней части экрана.\n
         Весёлой игры!"
     </string>
+    <string name="please_check_internet">Пожалуйста, проверьте Интернет-соединение.</string>
+    <string name="please_wait">Пожалуйста, подождите, идёт импорт подписок</string>
 </resources>
