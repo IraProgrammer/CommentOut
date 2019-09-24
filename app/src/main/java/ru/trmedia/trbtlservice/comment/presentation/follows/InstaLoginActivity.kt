@@ -1,5 +1,6 @@
 package ru.trmedia.trbtlservice.comment.presentation.follows
 
+import android.animation.AnimatorInflater
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,10 +9,11 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
-import android.view.animation.LinearInterpolator
+import android.view.animation.*
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -141,6 +143,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     override fun startGame() {
         pbHorizontal.visibility = View.GONE
         btnStartGame.visibility = View.VISIBLE
+
+        val anim = AnimationUtils.loadAnimation(this, R.anim.blink)
+        btnStartGame.startAnimation(anim)
+
         tvText.text = "Готово!"
     }
 
@@ -151,7 +157,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         )
     }
 
-    fun parseToken(url: String){
+    fun parseToken(url: String) {
         val uri = Uri.parse(url)
         var access_token = uri.getEncodedFragment() ?: ""
         access_token = access_token.substring(access_token.lastIndexOf("=") + 1)
