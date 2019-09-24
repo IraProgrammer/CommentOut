@@ -14,6 +14,13 @@ import com.bumptech.glide.Glide
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.activity_game.adView
+import kotlinx.android.synthetic.main.activity_game.btnRefresh
+import kotlinx.android.synthetic.main.activity_game.ivAvatar
+import kotlinx.android.synthetic.main.activity_game.ivHelp
+import kotlinx.android.synthetic.main.activity_game.tvPoints
+import kotlinx.android.synthetic.main.activity_game.tvUsername
+import kotlinx.android.synthetic.main.test.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.trmedia.trbtlservice.comment.R
@@ -26,75 +33,69 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     lateinit var gamePresenter: GamePresenter
 
     var count = 0
+    var isComment = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_game)
+        setContentView(R.layout.test)
 
         MobileAds.initialize(this)
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
-
-        ivHelp.setOnClickListener { v ->
-            AlertDialog.Builder(this)
-                .setView(R.layout.dialog_rules)
-                .setTitle("Правила игры")
-                .setPositiveButton(
-                    "ponyatno"
-                ) { _, _ ->
-                }
-                .create().show()
-        }
+//
+//        ivHelp.setOnClickListener { v ->
+//            AlertDialog.Builder(this)
+//                .setView(R.layout.dialog_rules)
+//                .setTitle("Правила игры")
+//                .setPositiveButton(
+//                    "ponyatno"
+//                ) { _, _ ->
+//                }
+//                .create().show()
+//        }
 
         btnRefresh.setOnClickListener { v ->
 
-            if (cvComment.cardBackgroundColor.equals(
-                    ColorStateList.valueOf(
-                        resources.getColor(R.color.colorAccent)
-                    )
-                )
-            ) count++
+            if (isComment) {
+                count++
 
-            tvPoints.text = count.toString()
+                tvPoints.text = count.toString()
 
-            gamePresenter.getRandomUser(baseContext)
-            cvPunishment.setCardBackgroundColor(
-                ColorStateList.valueOf(
-                    resources.getColor(R.color.white)
-                )
-            )
-            cvComment.setCardBackgroundColor(
-                ColorStateList.valueOf(
-                    resources.getColor(R.color.white)
-                )
-            )
+                gamePresenter.getRandomUser(baseContext)
+
+//            cvComment.setCardBackgroundColor(
+//                ColorStateList.valueOf(
+//                    resources.getColor(R.color.white)
+//                )
+//            )
+            }
         }
 
-        cvComment.setOnClickListener { v ->
-            cvPunishment.setCardBackgroundColor(
-                ColorStateList.valueOf(
-                    resources.getColor(R.color.white)
-                )
-            )
-            cvComment.setCardBackgroundColor(
-                ColorStateList.valueOf(
-                    resources.getColor(R.color.colorAccent)
-                )
-            )
+        btnComment.setOnClickListener { v ->
+//            cvPunishment.setCardBackgroundColor(
+//                ColorStateList.valueOf(
+//                    resources.getColor(R.color.white)
+//                )
+//            )
+//            cvComment.setCardBackgroundColor(
+//                ColorStateList.valueOf(
+//                    resources.getColor(R.color.colorAccent)
+//                )
+//            )
         }
 
-        cvPunishment.setOnClickListener { v ->
-            cvComment.setCardBackgroundColor(
-                ColorStateList.valueOf(
-                    resources.getColor(R.color.white)
-                )
-            )
-            cvPunishment.setCardBackgroundColor(
-                ColorStateList.valueOf(
-                    resources.getColor(R.color.colorAccent)
-                )
-            )
+        btnPunishment.setOnClickListener { v ->
+//            cvComment.setCardBackgroundColor(
+//                ColorStateList.valueOf(
+//                    resources.getColor(R.color.white)
+//                )
+//            )
+//            cvPunishment.setCardBackgroundColor(
+//                ColorStateList.valueOf(
+//                    resources.getColor(R.color.colorAccent)
+//                )
+//            )
         }
     }
 
@@ -112,8 +113,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     fun isIntentAvailable(ctx: Context, intent: Intent): Boolean {
         val packageManager = ctx.packageManager
-        val list =
-            packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        val list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         return list.size > 0
     }
 

@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/ic_background_up"
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/colorAccent"
         android:layout_weight="11"
         android:orientation="vertical">
 
@@ -16,26 +17,33 @@
             android:layout_width="match_parent"
             android:layout_height="60dp">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_new_game"
-                android:layout_gravity="center_horizontal" />
+            <Button
+                android:id="@+id/ivNewGame"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_reload" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <Button
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
                 android:layout_centerInParent="true"
-                android:text="Раунд 1" />
+                android:background="@drawable/ic_oval_up"
+                android:text="Раунд 1"
+                android:textColor="@color/white" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:src="@drawable/ic_help"
+            <Button
+                android:id="@+id/ivHelp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_alignParentEnd="true"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_vertical"
+                android:layout_margin="8dp"
+                android:background="@drawable/ic_help" />
 
         </RelativeLayout>
 
@@ -45,73 +53,112 @@
             android:layout_centerInParent="true"
             android:orientation="vertical">
 
-            <ImageView
-                android:src="@mipmap/ic_launcher"
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                android:layout_gravity="center_horizontal" />
+            <RelativeLayout
+                android:layout_width="170dp"
+                android:layout_height="170dp"
+                android:layout_gravity="center_horizontal">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:src="@drawable/ic_circle" />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivAvatar"
+                    android:layout_centerInParent="true"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:src="@drawable/scottish_fold" />
+            </RelativeLayout>
 
             <TextView
-                android:layout_marginTop="8dp"
+                android:id="@+id/tvUsername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="bvzdcdff" />
+                android:layout_marginTop="8dp"
+                android:text="bvzdcdff"
+                android:textColor="@color/white" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal">
 
             <Button
+                android:id="@+id/btnComment"
                 android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_buttonblue_v2"
                 android:text="КОММЕНТ"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:textColor="@color/white" />
 
             <Button
+                android:id="@+id/tvText"
                 android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_buttongrey_v2"
                 android:text="0"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:textColor="@color/white" />
 
             <Button
-                android:text="НАКАЗАНИЕ"
+                android:id="@+id/btnPunishment"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:background="@drawable/ic_buttonred_v2"
+                android:text="НАКАЗАНИЕ"
+                android:textColor="@color/white" />
         </LinearLayout>
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
+        android:background="@color/white"
         android:gravity="center"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btnRefresh">
 
             <TextView
+                android:id="@+id/tvToDo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 android:gravity="center_horizontal"
                 android:text="@string/safe" />
         </androidx.core.widget.NestedScrollView>
 
         <Button
-            android:text="ВЫПОЛНЕНО"
+            android:id="@+id/btnRefresh"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp" />
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="ВЫПОЛНЕНО" />
 
-    </LinearLayout>
+    </RelativeLayout>
 
-
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:adSize="SMART_BANNER"
+        app:adUnitId="ca-app-pub-3940256099942544/6300978111"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </LinearLayout>

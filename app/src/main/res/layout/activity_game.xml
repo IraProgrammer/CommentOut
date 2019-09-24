@@ -41,7 +41,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="8dp"
                 android:layout_toLeftOf="@+id/ivHelp"
-                android:src="@drawable/ic_new_game" />
+                android:src="@drawable/ic_help" />
 
             <ImageView
                 android:id="@+id/ivHelp"
