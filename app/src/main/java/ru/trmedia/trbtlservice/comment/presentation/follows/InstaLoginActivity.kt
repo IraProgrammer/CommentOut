@@ -1,6 +1,5 @@
 package ru.trmedia.trbtlservice.comment.presentation.follows
 
-import android.animation.AnimatorInflater
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -13,26 +12,23 @@ import android.view.animation.*
 import android.webkit.ValueCallback
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
-import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_insta_login.*
 import kotlinx.android.synthetic.main.activity_insta_login.tvText
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
-import ru.trmedia.trbtlservice.comment.R
 import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
 import ru.trmedia.trbtlservice.comment.data.network.AppPreferences.Companion.SHOW_SAFE
 import ru.trmedia.trbtlservice.comment.domain.Follow
 import ru.trmedia.trbtlservice.comment.domain.UserWrap
 import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
+import android.widget.LinearLayout
+import android.R
+import androidx.constraintlayout.widget.ConstraintLayout
 
 
 class InstaLoginActivity : MvpAppCompatActivity(),
@@ -46,9 +42,9 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     var canParse = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
+        setTheme(ru.trmedia.trbtlservice.comment.R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_insta_login)
+        setContentView(ru.trmedia.trbtlservice.comment.R.layout.activity_insta_login)
 
         instaLoginPresenter.checkNetwork()
 
@@ -69,7 +65,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     override fun networkFailed() {
         if (llProgress.isVisible) {
-            tvText.text = getString(R.string.please_check_internet)
+            tvText.text = getString(ru.trmedia.trbtlservice.comment.R.string.please_check_internet)
             progressAnimator?.pause()
             canParse = false
             pbHorizontal.visibility = View.GONE
@@ -83,7 +79,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         pbHorizontal.visibility = View.VISIBLE
         canParse = true
         llNoNetwork.visibility = View.GONE
-        tvText.text = getString(R.string.please_wait)
+        tvText.text = getString(ru.trmedia.trbtlservice.comment.R.string.please_wait)
         progressAnimator?.start()
         wvInsta.reload()
     }
@@ -91,9 +87,13 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     private fun initUI() {
         if (AppPreferences(baseContext).getBoolean(SHOW_SAFE)) {
 
-            val l = layoutInflater.inflate(R.layout.dialog_safetly, null)
+            val l = layoutInflater.inflate(
+                ru.trmedia.trbtlservice.comment.R.layout.dialog_safetly,
+                null
+            )
 
-            val chb = l.findViewById<CheckBox>(R.id.chbDontShowAgain)
+            val chb =
+                l.findViewById<CheckBox>(ru.trmedia.trbtlservice.comment.R.id.chbDontShowAgain)
 
             AlertDialog.Builder(this)
                 .setView(l)
@@ -127,7 +127,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun onShowLoading() {
-        llProgress.visibility = View.VISIBLE
+        //llProgress.visibility = View.VISIBLE
+
+        wvInsta.layoutParams = ConstraintLayout.LayoutParams(500, 800)
+
         pbHorizontal.visibility = View.VISIBLE
 
         progressAnimator = ObjectAnimator.ofInt(pbHorizontal, "progress", 0, 10000)
@@ -135,7 +138,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             pbHorizontal.visibility = View.GONE
             tvText.text = "Готово!"
         })
-        progressAnimator?.duration = 15000
+        progressAnimator?.duration = 35000
         progressAnimator?.interpolator = LinearInterpolator()
         progressAnimator?.start()
     }
@@ -144,7 +147,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         pbHorizontal.visibility = View.GONE
         btnStartGame.visibility = View.VISIBLE
 
-        val anim = AnimationUtils.loadAnimation(this, R.anim.blink)
+        val anim = AnimationUtils.loadAnimation(this, ru.trmedia.trbtlservice.comment.R.anim.blink)
         btnStartGame.startAnimation(anim)
 
         tvText.text = "Готово!"
@@ -152,7 +155,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     fun clickFollowers() {
         wvInsta.evaluateJavascript(
-            "(function() { return ('<html>'+document.getElementsByTagName('A')[1].click()+'</html>'); })();",
+            "(function() { return ('<html>'+document.getElementsByTagName('A')[2].click()+'</html>'); })();",
+
             null
         )
     }
@@ -183,7 +187,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                 when {
                     url.equals(
                         "https://www.instagram.com/" + AppPreferences(baseContext)
-                            .getString(AppPreferences.USER_NAME) + "/followers/"
+                            .getString(AppPreferences.USER_NAME) + "/following/"
                     ) -> {
                         parseFollowsWithDelay()
                     }
@@ -198,7 +202,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                     }
                     url.contains("?error") -> Toast.makeText(
                         baseContext,
-                        getString(R.string.please_check_internet),
+                        getString(ru.trmedia.trbtlservice.comment.R.string.please_check_internet),
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -207,53 +211,55 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun parseFollowsWithDelay() {
-        Handler().postDelayed({
-            wvInsta.evaluateJavascript(
-                "(function(){return window.document.body.outerHTML})();",
-                object : ValueCallback<String> {
-                    override fun onReceiveValue(html: String) {
+        Handler().postDelayed(
+            {
+                wvInsta.evaluateJavascript(
+                    "(function(){return window.document.body.outerHTML})();",
+                    object : ValueCallback<String> {
+                        override fun onReceiveValue(html: String) {
 
-                        Log.d("HTML", html)
+                            Log.d("HTML", html)
 
-                        val a = ArrayList<String>()
+                            val list = html.split("img alt=\\\"")
 
-                        val b = ArrayList<String>()
+                            val peoples = list.subList(1, list.size)
 
-                        val p = ArrayList<String>()
+                            val follows = ArrayList<Follow>()
 
-                        val res = ArrayList<Follow>()
+                            for (i in peoples.indices) {
 
-                        val s = html.split("\"")
+                                val units = peoples[i].split("\"")
+                                val follow = Follow(0, "", "")
 
-                        for (i in s.indices) {
-                            if (s[i].equals(" title=\\")) {
-                                if (!s[i + 1].contains("Подтвержденный") && !s[i + 1].contains(
-                                        "Verified"
-                                    )
-                                ) {
-                                    a.add(
-                                        s[i + 1].substring(0, s[i + 1].length - 1)
-                                    )
+                                for (j in units.indices) {
+//                                    if (j == 0) {
+//                                        follow.username = units[j].substring(0, units[0].length - 1)
+//                                        follows.add(follow)
+                                    if (units[j].equals(" src=\\")) {
+                                        follow.profilePictureUrl =
+                                            units[j + 1].substring(0, units[j + 1].length - 1)
+                                        continue
+                                    } else if (units[j].equals(" title=\\") && units[j + 2].equals(
+                                            " href=\\"
+                                        )
+                                    ) {
+                                        follow.username =
+                                            units[j + 1].substring(0, units[j + 1].length - 2)
+                                        follows.add(follow)
+                                    }
                                 }
                             }
-                            if (s[i].equals(" type=\\")) {
-                                b.add(s[i + 2])
-                            }
-                            if (s[i].equals(" src=\\")) {
-                                p.add(s[i + 1].substring(0, s[i + 1].length - 1))
+                            if (canParse && follows.size > 0) {
+                                instaLoginPresenter.saveFollowsToDb(follows)
                             }
                         }
+                    })
+            }, 30000
+        )
+    }
 
-                        for (i in b.indices) {
-                            if (b[i].contains("Подписки") || b[i].contains("Following")) {
-                                res.add(Follow(0, a[i], p[i]))
-                            }
-                        }
-
-                        if (canParse && res.size > 0) instaLoginPresenter.saveFollowsToDb(res)
-
-                    }
-                })
-        }, 10000)
+    override fun onDestroy() {
+        wvInsta.destroy()
+        super.onDestroy()
     }
 }
