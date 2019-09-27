@@ -29,6 +29,9 @@ import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
 import android.widget.LinearLayout
 import android.R
 import androidx.constraintlayout.widget.ConstraintLayout
+import ru.trmedia.trbtlservice.comment.App
+import ru.trmedia.trbtlservice.comment.di.module.InstaLoginModule
+import javax.inject.Inject
 
 
 class InstaLoginActivity : MvpAppCompatActivity(),
@@ -37,6 +40,9 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     @InjectPresenter
     lateinit var instaLoginPresenter: InstaLoginPresenter
 
+    @Inject
+    lateinit var prefs: AppPreferences
+
     var progressAnimator: ObjectAnimator? = null
 
     var canParse = true
@@ -44,6 +50,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(ru.trmedia.trbtlservice.comment.R.style.AppTheme)
         super.onCreate(savedInstanceState)
+        App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.trmedia.trbtlservice.comment.R.layout.activity_insta_login)
 
         instaLoginPresenter.checkNetwork()
@@ -85,7 +92,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun initUI() {
-        if (AppPreferences(baseContext).getBoolean(SHOW_SAFE)) {
+        if (prefs.getBoolean(SHOW_SAFE)) {
 
             val l = layoutInflater.inflate(
                 ru.trmedia.trbtlservice.comment.R.layout.dialog_safetly,
@@ -102,7 +109,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                     "ponyatno"
                 ) { dialog, which ->
                     if (chb.isChecked) {
-                        AppPreferences(baseContext).putBoolean(SHOW_SAFE, false)
+                        prefs.putBoolean(SHOW_SAFE, false)
                     }
                     initializeWebView()
                 }
@@ -113,7 +120,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun onShowInfo(userWrap: UserWrap) {
-        AppPreferences(baseContext).putString(AppPreferences.USER_NAME, userWrap.user.username)
+        prefs.putString(AppPreferences.USER_NAME, userWrap.user.username)
 
         wvInsta.loadUrl(getString(ru.trmedia.trbtlservice.comment.R.string.redirect_base_url) + userWrap.user.username)
     }
@@ -121,13 +128,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     fun onTokenReceived(auth_token: String) {
         onShowLoading()
 
-        AppPreferences(baseContext)
-            .putString(AppPreferences.TOKEN, auth_token)
-        instaLoginPresenter.getUserInfoByAccessToken(auth_token)
+        prefs.putString(AppPreferences.TOKEN, auth_token)
+        //instaLoginPresenter.getUserInfoByAccessToken(auth_token)
     }
 
     private fun onShowLoading() {
-        //llProgress.visibility = View.VISIBLE
+        llProgress.visibility = View.VISIBLE
 
         wvInsta.layoutParams = ConstraintLayout.LayoutParams(500, 800)
 
@@ -138,7 +144,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             pbHorizontal.visibility = View.GONE
             tvText.text = "Готово!"
         })
-        progressAnimator?.duration = 35000
+        progressAnimator?.duration = 15000
         progressAnimator?.interpolator = LinearInterpolator()
         progressAnimator?.start()
     }
@@ -174,10 +180,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         wvInsta.settings.javaScriptEnabled = true
         wvInsta.settings.domStorageEnabled = true
         wvInsta.loadUrl(
-            "https://api.instagram.com/" + "oauth/authorize/?client_id=" +
-                    getString(ru.trmedia.trbtlservice.comment.R.string.client_id) +
-                    "&redirect_uri=" + getString(ru.trmedia.trbtlservice.comment.R.string.redirect_base_url) +
-                    "&response_type=token&display=touch&scope=basic"
+            "https://www.instagram.com/accounts/login"
         )
 
         wvInsta.webViewClient = object : WebViewClient() {
@@ -185,20 +188,33 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 when {
-                    url.equals(
-                        "https://www.instagram.com/" + AppPreferences(baseContext)
-                            .getString(AppPreferences.USER_NAME) + "/following/"
+                    url.contains(
+                        "/following/"
                     ) -> {
                         parseFollowsWithDelay()
                     }
-                    url.equals(
-                        "https://www.instagram.com/" + AppPreferences(baseContext)
-                            .getString(AppPreferences.USER_NAME) + "/"
-                    ) -> {
+                    url.equals("https://www.instagram.com/" + prefs.getString(AppPreferences.USER_NAME) + "/") -> {
                         clickFollowers()
                     }
-                    url.contains("access_token=") -> {
-                        parseToken(url)
+                    url.equals("https://www.instagram.com/") -> {
+                        onTokenReceived("")
+                        wvInsta.evaluateJavascript(
+                            "(function(){return window.document.body.outerHTML})();",
+                            object : ValueCallback<String> {
+                                override fun onReceiveValue(html: String) {
+                                    Log.d("HTML", html)
+
+                                    val a = html.split("\\\"")
+
+                                    for (i in a.indices) {
+                                        if (a[i].equals("username")) {
+                                            prefs.putString(AppPreferences.USER_NAME, a[i + 2])
+                                            wvInsta.loadUrl("https://www.instagram.com/" + a[i + 2])
+                                            break
+                                        }
+                                    }
+                                }
+                            })
                     }
                     url.contains("?error") -> Toast.makeText(
                         baseContext,
@@ -232,9 +248,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                 val follow = Follow(0, "", "")
 
                                 for (j in units.indices) {
-//                                    if (j == 0) {
-//                                        follow.username = units[j].substring(0, units[0].length - 1)
-//                                        follows.add(follow)
                                     if (units[j].equals(" src=\\")) {
                                         follow.profilePictureUrl =
                                             units[j + 1].substring(0, units[j + 1].length - 1)
@@ -254,7 +267,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                             }
                         }
                     })
-            }, 30000
+            }, 10000
         )
     }
 

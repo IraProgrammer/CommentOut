@@ -8,7 +8,7 @@ import ru.trmedia.trbtlservice.comment.di.scope.PerApplication
 
 @PerApplication
 @Component(
-    modules = [ContextModule::class, NetworkModule::class, DatabaseModule::class]
+    modules = [ContextModule::class, NetworkModule::class, DatabaseModule::class, PreferencesModule::class]
 )
 interface AppComponent {
     fun addInstaLoginComponent(instaLoginModule: InstaLoginModule): InstaLoginComponent

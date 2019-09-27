@@ -11,6 +11,7 @@ import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.trmedia.trbtlservice.comment.App
 import ru.trmedia.trbtlservice.comment.data.database.AppDatabase
+import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
 import ru.trmedia.trbtlservice.comment.data.network.InstaApi
 import ru.trmedia.trbtlservice.comment.di.module.InstaLoginModule
 import ru.trmedia.trbtlservice.comment.domain.Follow

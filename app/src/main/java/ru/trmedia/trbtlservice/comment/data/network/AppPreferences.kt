@@ -6,12 +6,7 @@ import android.content.SharedPreferences
 
 class AppPreferences(context: Context) {
 
-    private val preferences: SharedPreferences
-
-    init {
-        this.preferences =
-            context.getSharedPreferences(APP_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
-    }
+    private val preferences = context.getSharedPreferences(APP_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
 
     fun getString(key: String): String? {
         return preferences.getString(key, null)

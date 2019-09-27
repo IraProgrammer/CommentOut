@@ -10,7 +10,10 @@ import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_game.*
@@ -33,6 +36,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     lateinit var gamePresenter: GamePresenter
 
     var count = 0
+    var raund = 1
     var isComment = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,19 +47,26 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
-//
-//        ivHelp.setOnClickListener { v ->
-//            AlertDialog.Builder(this)
-//                .setView(R.layout.dialog_rules)
-//                .setTitle("Правила игры")
-//                .setPositiveButton(
-//                    "ponyatno"
-//                ) { _, _ ->
-//                }
-//                .create().show()
-//        }
+
+        ivHelp.setOnClickListener { v ->
+            AlertDialog.Builder(this)
+                .setView(R.layout.dialog_rules)
+                .setTitle("Правила игры")
+                .setPositiveButton(
+                    "ponyatno"
+                ) { _, _ ->
+                }
+                .create().show()
+        }
 
         btnRefresh.setOnClickListener { v ->
+
+            if (raund == 6) {
+            } else {
+
+                raund++
+                tvRaund.text = "Раунд $raund"
+            }
 
             if (isComment) {
                 count++
@@ -63,39 +74,17 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 tvPoints.text = count.toString()
 
                 gamePresenter.getRandomUser(baseContext)
-
-//            cvComment.setCardBackgroundColor(
-//                ColorStateList.valueOf(
-//                    resources.getColor(R.color.white)
-//                )
-//            )
             }
         }
 
         btnComment.setOnClickListener { v ->
-//            cvPunishment.setCardBackgroundColor(
-//                ColorStateList.valueOf(
-//                    resources.getColor(R.color.white)
-//                )
-//            )
-//            cvComment.setCardBackgroundColor(
-//                ColorStateList.valueOf(
-//                    resources.getColor(R.color.colorAccent)
-//                )
-//            )
+            btnComment.isSelected = true
+            btnPunishment.isSelected = false
         }
 
         btnPunishment.setOnClickListener { v ->
-//            cvComment.setCardBackgroundColor(
-//                ColorStateList.valueOf(
-//                    resources.getColor(R.color.white)
-//                )
-//            )
-//            cvPunishment.setCardBackgroundColor(
-//                ColorStateList.valueOf(
-//                    resources.getColor(R.color.colorAccent)
-//                )
-//            )
+            btnPunishment.isSelected = true
+            btnComment.isSelected = false
         }
     }
 
@@ -144,19 +133,20 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
         tvUsername.setOnClickListener { v -> openUserInInsta(follow.username) }
 
-        tvComment.text = "comment"
+        tvToDo.text = "comment"
 
         Glide.with(baseContext)
             .load(follow.profilePictureUrl)
+            .apply(RequestOptions.circleCropTransform())
             .placeholder(R.drawable.ic_user)
             .into(ivAvatar)
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("label", tvComment.text.toString())
+        val clip = ClipData.newPlainText("label", tvToDo.text.toString())
         clipboard.setPrimaryClip(clip)
 
         Toast.makeText(baseContext, "Copy ok", Toast.LENGTH_SHORT).show()
 
-        tvPunishment.text = "pun"
+        //tvPunishment.text = "pun"
     }
 }
