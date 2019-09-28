@@ -28,6 +28,7 @@ import ru.trmedia.trbtlservice.comment.domain.UserWrap
 import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
 import android.widget.LinearLayout
 import android.R
+import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import ru.trmedia.trbtlservice.comment.App
 import ru.trmedia.trbtlservice.comment.di.module.InstaLoginModule
@@ -46,6 +47,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     var progressAnimator: ObjectAnimator? = null
 
     var canParse = true
+
+    var isLoadingShownNow = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(ru.trmedia.trbtlservice.comment.R.style.AppTheme)
@@ -94,42 +97,39 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     private fun initUI() {
         if (prefs.getBoolean(SHOW_SAFE)) {
 
-            val l = layoutInflater.inflate(
-                ru.trmedia.trbtlservice.comment.R.layout.dialog_safetly,
-                null
-            )
+           showSafetlyDialog()
 
-            val chb =
-                l.findViewById<CheckBox>(ru.trmedia.trbtlservice.comment.R.id.chbDontShowAgain)
-
-            AlertDialog.Builder(this)
-                .setView(l)
-                .setCancelable(false)
-                .setPositiveButton(
-                    "ponyatno"
-                ) { dialog, which ->
-                    if (chb.isChecked) {
-                        prefs.putBoolean(SHOW_SAFE, false)
-                    }
-                    initializeWebView()
-                }
-                .create().show()
         } else {
             initializeWebView()
         }
     }
 
-    override fun onShowInfo(userWrap: UserWrap) {
-        prefs.putString(AppPreferences.USER_NAME, userWrap.user.username)
+    private fun showSafetlyDialog() {
+        val l = layoutInflater.inflate(
+            ru.trmedia.trbtlservice.comment.R.layout.dialog_safetly,
+            null
+        )
 
-        wvInsta.loadUrl(getString(ru.trmedia.trbtlservice.comment.R.string.redirect_base_url) + userWrap.user.username)
-    }
+        val chb =
+            l.findViewById<CheckBox>(ru.trmedia.trbtlservice.comment.R.id.chbDontShowAgain)
+        val btn = l.findViewById<Button>(ru.trmedia.trbtlservice.comment.R.id.btnAgree)
 
-    fun onTokenReceived(auth_token: String) {
-        onShowLoading()
+        val dialog = AlertDialog.Builder(this)
+            .setView(l)
+            .setCancelable(false)
+            .create()
 
-        prefs.putString(AppPreferences.TOKEN, auth_token)
-        //instaLoginPresenter.getUserInfoByAccessToken(auth_token)
+        dialog.window?.setBackgroundDrawableResource(ru.trmedia.trbtlservice.comment.R.color.transparent)
+        dialog.show()
+
+        btn.setOnClickListener { v ->
+            run {
+                if (chb.isChecked) {
+                    prefs.putBoolean(SHOW_SAFE, false)
+                }
+                initializeWebView()
+            }
+        }
     }
 
     private fun onShowLoading() {
@@ -159,19 +159,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         tvText.text = "Готово!"
     }
 
-    fun clickFollowers() {
+    private fun clickFollowers() {
         wvInsta.evaluateJavascript(
             "(function() { return ('<html>'+document.getElementsByTagName('A')[2].click()+'</html>'); })();",
 
             null
         )
-    }
-
-    fun parseToken(url: String) {
-        val uri = Uri.parse(url)
-        var access_token = uri.getEncodedFragment() ?: ""
-        access_token = access_token.substring(access_token.lastIndexOf("=") + 1)
-        onTokenReceived(access_token)
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -197,7 +190,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                         clickFollowers()
                     }
                     url.equals("https://www.instagram.com/") -> {
-                        onTokenReceived("")
+                        if (!isLoadingShownNow) {
+                            onShowLoading()
+                            isLoadingShownNow = true
+                        }
                         wvInsta.evaluateJavascript(
                             "(function(){return window.document.body.outerHTML})();",
                             object : ValueCallback<String> {
@@ -257,7 +253,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                         )
                                     ) {
                                         follow.username =
-                                            units[j + 1].substring(0, units[j + 1].length - 2)
+                                            units[j + 1].substring(0, units[j + 1].length - 1)
                                         follows.add(follow)
                                     }
                                 }

@@ -32,14 +32,6 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
     }
 
-    fun getUserInfoByAccessToken(authToken: String) {
-        compositeDisposable.add(instaApi.getUserInfo(authToken)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ userWrap -> viewState.onShowInfo(userWrap) }, { throwable -> {} })
-        )
-    }
-
     fun saveFollowsToDb(follows: List<Follow>) {
         db.followDao().delete()
 

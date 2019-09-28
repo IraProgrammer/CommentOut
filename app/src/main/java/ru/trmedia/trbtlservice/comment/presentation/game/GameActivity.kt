@@ -8,8 +8,11 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Button
+import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialog
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
@@ -23,11 +26,17 @@ import kotlinx.android.synthetic.main.activity_game.ivAvatar
 import kotlinx.android.synthetic.main.activity_game.ivHelp
 import kotlinx.android.synthetic.main.activity_game.tvPoints
 import kotlinx.android.synthetic.main.activity_game.tvUsername
+import kotlinx.android.synthetic.main.dialog_rules.*
 import kotlinx.android.synthetic.main.test.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
+import ru.trmedia.trbtlservice.comment.App
 import ru.trmedia.trbtlservice.comment.R
+import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
+import ru.trmedia.trbtlservice.comment.di.module.GameModule
+import ru.trmedia.trbtlservice.comment.di.module.InstaLoginModule
 import ru.trmedia.trbtlservice.comment.domain.Follow
+import javax.inject.Inject
 
 
 class GameActivity : MvpAppCompatActivity(), GameView {
@@ -35,12 +44,16 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @InjectPresenter
     lateinit var gamePresenter: GamePresenter
 
+    @Inject
+    lateinit var prefs: AppPreferences
+
     var count = 0
     var raund = 1
     var isComment = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        App.appComponent?.addGameComponent(GameModule())?.inject(this)
         setContentView(R.layout.test)
 
         MobileAds.initialize(this)
@@ -48,15 +61,13 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
+        if (prefs.getBoolean(AppPreferences.SHOW_RULES)) {
+            showRulesDialog()
+            prefs.putBoolean(AppPreferences.SHOW_RULES, false)
+        }
+
         ivHelp.setOnClickListener { v ->
-            AlertDialog.Builder(this)
-                .setView(R.layout.dialog_rules)
-                .setTitle("Правила игры")
-                .setPositiveButton(
-                    "ponyatno"
-                ) { _, _ ->
-                }
-                .create().show()
+            showRulesDialog()
         }
 
         btnRefresh.setOnClickListener { v ->
@@ -86,6 +97,24 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             btnPunishment.isSelected = true
             btnComment.isSelected = false
         }
+    }
+
+    private fun showRulesDialog() {
+        val l = layoutInflater.inflate(
+            R.layout.dialog_rules,
+            null
+        )
+
+        val btn = l.findViewById<Button>(R.id.btnAgree)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(l)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog.show()
+
+        btn.setOnClickListener { v -> dialog.dismiss() }
     }
 
     fun openUserInInsta(username: String) {

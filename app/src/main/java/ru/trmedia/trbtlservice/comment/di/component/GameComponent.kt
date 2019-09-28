@@ -3,6 +3,7 @@ package ru.trmedia.trbtlservice.comment.di.component
 import dagger.Subcomponent
 import ru.trmedia.trbtlservice.comment.di.module.GameModule
 import ru.trmedia.trbtlservice.comment.di.scope.PerActivity
+import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
 import ru.trmedia.trbtlservice.comment.presentation.game.GamePresenter
 
 @PerActivity
@@ -11,4 +12,6 @@ import ru.trmedia.trbtlservice.comment.presentation.game.GamePresenter
 )
 interface GameComponent {
     fun inject(gamePresenter: GamePresenter)
+
+    fun inject(gameActivity: GameActivity)
 }

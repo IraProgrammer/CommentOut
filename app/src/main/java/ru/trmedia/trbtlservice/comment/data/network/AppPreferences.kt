@@ -54,11 +54,11 @@ class AppPreferences(context: Context) {
 
     companion object {
         val APP_PREFERENCES_FILE_NAME = "userdata"
-        val TOKEN = "token"
         val USER_NAME = "username"
         val USERS_SET = "usersSet"
         val COMMENTS_SET = "commentsSet"
         val PUNISHMENT_SET = "punishmentSet"
         val SHOW_SAFE = "showSafe"
+        val SHOW_RULES = "showRules"
     }
 }
