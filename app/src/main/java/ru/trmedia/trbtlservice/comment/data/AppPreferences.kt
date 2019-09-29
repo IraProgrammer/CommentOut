@@ -1,7 +1,6 @@
-package ru.trmedia.trbtlservice.comment.data.network
+package ru.trmedia.trbtlservice.comment.data
 
 import android.content.Context
-import android.content.SharedPreferences
 
 
 class AppPreferences(context: Context) {
@@ -60,5 +59,12 @@ class AppPreferences(context: Context) {
         val PUNISHMENT_SET = "punishmentSet"
         val SHOW_SAFE = "showSafe"
         val SHOW_RULES = "showRules"
+        val COMMENT = "comment"
+        val PUNISHMENT = "punishment"
+        val USER_IN_CIRCLE = "user_in_circle"
+        val PHOTO = "photo"
+        val RAUND = "raund"
+        val NEED_NEW_GAME = "needNewGame"
+        val POINTS = "points"
     }
 }

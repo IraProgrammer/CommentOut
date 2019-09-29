@@ -1,41 +1,25 @@
 package ru.trmedia.trbtlservice.comment.presentation.game
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Button
-import android.widget.CheckBox
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDialog
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.activity_game.adView
-import kotlinx.android.synthetic.main.activity_game.btnRefresh
-import kotlinx.android.synthetic.main.activity_game.ivAvatar
-import kotlinx.android.synthetic.main.activity_game.ivHelp
-import kotlinx.android.synthetic.main.activity_game.tvPoints
-import kotlinx.android.synthetic.main.activity_game.tvUsername
-import kotlinx.android.synthetic.main.dialog_rules.*
-import kotlinx.android.synthetic.main.test.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.trmedia.trbtlservice.comment.App
 import ru.trmedia.trbtlservice.comment.R
-import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
+import ru.trmedia.trbtlservice.comment.data.AppPreferences
 import ru.trmedia.trbtlservice.comment.di.module.GameModule
-import ru.trmedia.trbtlservice.comment.di.module.InstaLoginModule
 import ru.trmedia.trbtlservice.comment.domain.Follow
+import ru.trmedia.trbtlservice.comment.presentation.OneModel
 import javax.inject.Inject
 
 
@@ -47,14 +31,17 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @Inject
     lateinit var prefs: AppPreferences
 
-    var count = 0
-    var raund = 1
-    var isComment = true
+    private var count = 0
+    private var raund = 1
+
+    var oneModel = OneModel("", "", "", "")
+
+    private var isGameOver = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
-        setContentView(R.layout.test)
+        setContentView(R.layout.activity_game)
 
         MobileAds.initialize(this)
 
@@ -66,37 +53,105 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             prefs.putBoolean(AppPreferences.SHOW_RULES, false)
         }
 
+        if (prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
+
+            gamePresenter.getRandomUser()
+        } else {
+            tvToDo.text = prefs.getString(AppPreferences.COMMENT)
+            tvUsername.text = prefs.getString(AppPreferences.USER_IN_CIRCLE)
+
+            Glide.with(baseContext)
+                .load(prefs.getString(AppPreferences.PHOTO))
+                .apply(RequestOptions.circleCropTransform())
+                .placeholder(R.drawable.ic_user)
+                .into(ivAvatar)
+
+            tvRaund.text = prefs.getString(AppPreferences.RAUND)
+
+            tvPoints.text = prefs.getString(AppPreferences.POINTS)
+
+            ivAvatar.setOnClickListener { v ->
+                openUserInInsta(
+                    prefs.getString(AppPreferences.USER_IN_CIRCLE) ?: ""
+                )
+            }
+
+            tvUsername.setOnClickListener { v ->
+                openUserInInsta(
+                    prefs.getString(AppPreferences.USER_IN_CIRCLE) ?: ""
+                )
+            }
+        }
+
+        btnComment.isSelected = true
+        btnPunishment.isSelected = false
+
         ivHelp.setOnClickListener { v ->
             showRulesDialog()
         }
 
+        ivNewGame.setOnClickListener { v ->
+            AlertDialog.Builder(this)
+                .setMessage("Вы действительнохотите начать новую игру?")
+                .setPositiveButton("Да") { _, _ -> startNewGame() }
+                .setNegativeButton("Нет") { _, _ -> }
+                .create().show()
+        }
+
         btnRefresh.setOnClickListener { v ->
 
-            if (raund == 6) {
-            } else {
-
-                raund++
-                tvRaund.text = "Раунд $raund"
-            }
-
-            if (isComment) {
+            if (btnComment.isSelected) {
                 count++
 
                 tvPoints.text = count.toString()
+            }
 
-                gamePresenter.getRandomUser(baseContext)
+            if (raund == 6) {
+                isGameOver = true
+                AlertDialog.Builder(this)
+                    .setMessage("Вы набрали $count баллов за игру! Хотите начать новую игру или выйти?")
+                    .setCancelable(false)
+                    .setNegativeButton("Новая игра") { _, _ -> startNewGame() }
+                    .setPositiveButton("Выход") { _, _ -> finish() }
+                    .create().show()
+            } else {
+                gamePresenter.getRandomUser()
+                btnComment.isSelected = true
+                btnPunishment.isSelected = false
+                raund++
+//                val toast = Toast.makeText(this, "Раунд $raund", Toast.LENGTH_SHORT)
+//                toast.setGravity(Gravity.TOP, 0, 0)
+//                toast.show()
+                tvRaund.text = "Раунд $raund"
             }
         }
 
         btnComment.setOnClickListener { v ->
+            tvToDo.text = oneModel.comment
             btnComment.isSelected = true
             btnPunishment.isSelected = false
         }
 
         btnPunishment.setOnClickListener { v ->
+            tvToDo.text = oneModel.punishment
             btnPunishment.isSelected = true
             btnComment.isSelected = false
         }
+    }
+
+    private fun startNewGame() {
+        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
+        //this.recreate()
+
+        isGameOver = false
+        raund = 1
+        count = 0
+        tvPoints.text = "0"
+        gamePresenter.getRandomUser()
+        tvRaund.text = "Раунд 1"
+
+        btnComment.isSelected = true
+        btnPunishment.isSelected = false
     }
 
     private fun showRulesDialog() {
@@ -108,13 +163,26 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         val btn = l.findViewById<Button>(R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l)
+            .setView(l, 0, 48, 0, 48)
             .create()
 
         dialog.window?.setBackgroundDrawableResource(R.color.transparent)
         dialog.show()
 
         btn.setOnClickListener { v -> dialog.dismiss() }
+    }
+
+    override fun onPause() {
+        if (!isGameOver) {
+            prefs.putString(AppPreferences.COMMENT, oneModel.comment)
+            prefs.putString(AppPreferences.PUNISHMENT, oneModel.punishment)
+            prefs.putString(AppPreferences.USER_IN_CIRCLE, tvUsername.text.toString())
+            prefs.putString(AppPreferences.PHOTO, oneModel.profilePictureUrl)
+            prefs.putString(AppPreferences.RAUND, tvRaund.text.toString())
+            prefs.putString(AppPreferences.POINTS, tvPoints.text.toString())
+            prefs.putBoolean(AppPreferences.NEED_NEW_GAME, false)
+        }
+        super.onPause()
     }
 
     fun openUserInInsta(username: String) {
@@ -135,47 +203,27 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         return list.size > 0
     }
 
-    override fun onBackPressed() {
-        AlertDialog.Builder(this)
-            .setMessage("Сохранить игру?")
-            .setTitle("Ня! :3")
-            .setPositiveButton(
-                "da"
-            ) { dialog, which ->
-                Toast.makeText(baseContext, "ok", Toast.LENGTH_SHORT).show()
-                super.onBackPressed()
-                dialog.dismiss()
-            }
-            .setNegativeButton(
-                "net"
-            ) { dialog, which ->
-                Toast.makeText(baseContext, "net", Toast.LENGTH_SHORT).show()
-                super.onBackPressed()
-                dialog.dismiss()
-            }
-            .create().show()
-    }
+    override fun onShowNextRaund(oneModel: OneModel) {
+        this.oneModel = oneModel
 
-    override fun onShowRandomUser(follow: Follow) {
+        tvUsername.setText(oneModel.username)
 
-        tvUsername.setText(follow.username)
+        ivAvatar.setOnClickListener { v -> openUserInInsta(oneModel.username) }
 
-        tvUsername.setOnClickListener { v -> openUserInInsta(follow.username) }
+        tvUsername.setOnClickListener { v -> openUserInInsta(oneModel.username) }
 
         tvToDo.text = "comment"
 
         Glide.with(baseContext)
-            .load(follow.profilePictureUrl)
+            .load(oneModel.profilePictureUrl)
             .apply(RequestOptions.circleCropTransform())
-            .placeholder(R.drawable.ic_user)
+            .transition(DrawableTransitionOptions.withCrossFade())
             .into(ivAvatar)
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("label", tvToDo.text.toString())
         clipboard.setPrimaryClip(clip)
 
-        Toast.makeText(baseContext, "Copy ok", Toast.LENGTH_SHORT).show()
-
-        //tvPunishment.text = "pun"
+        tvToDo.text = oneModel.comment
     }
 }

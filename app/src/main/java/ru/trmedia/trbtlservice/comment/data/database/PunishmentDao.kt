@@ -6,19 +6,16 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
+import org.w3c.dom.Comment
+import ru.trmedia.trbtlservice.comment.domain.EvilComment
 import ru.trmedia.trbtlservice.comment.domain.Follow
+import ru.trmedia.trbtlservice.comment.domain.Punishment
 
 @Dao
-interface FollowDao {
+interface PunishmentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(follows: List<Follow>): Completable
+    fun insert(punishments: List<Punishment>)
 
-    @Query("DELETE FROM Follow")
-    fun delete()
-
-    @Query("SELECT * FROM Follow")
-    fun getAll(): Single<List<Follow>>
-
-    @Query("SELECT * FROM Follow")
-    fun getAllS(): List<Follow>
+    @Query("SELECT * FROM Punishment")
+    fun getAll(): Single<List<Punishment>>
 }

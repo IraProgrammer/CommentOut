@@ -3,7 +3,6 @@ package ru.trmedia.trbtlservice.comment.presentation.follows
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -21,13 +20,10 @@ import kotlinx.android.synthetic.main.activity_insta_login.*
 import kotlinx.android.synthetic.main.activity_insta_login.tvText
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
-import ru.trmedia.trbtlservice.comment.data.network.AppPreferences
-import ru.trmedia.trbtlservice.comment.data.network.AppPreferences.Companion.SHOW_SAFE
+import ru.trmedia.trbtlservice.comment.data.AppPreferences
+import ru.trmedia.trbtlservice.comment.data.AppPreferences.Companion.SHOW_SAFE
 import ru.trmedia.trbtlservice.comment.domain.Follow
-import ru.trmedia.trbtlservice.comment.domain.UserWrap
 import ru.trmedia.trbtlservice.comment.presentation.game.GameActivity
-import android.widget.LinearLayout
-import android.R
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import ru.trmedia.trbtlservice.comment.App
@@ -55,6 +51,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         super.onCreate(savedInstanceState)
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.trmedia.trbtlservice.comment.R.layout.activity_insta_login)
+
+        if (!prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
+            val intent = Intent(baseContext, GameActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         instaLoginPresenter.checkNetwork()
 
@@ -97,7 +99,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     private fun initUI() {
         if (prefs.getBoolean(SHOW_SAFE)) {
 
-           showSafetlyDialog()
+            showSafetlyDialog()
 
         } else {
             initializeWebView()
@@ -115,7 +117,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         val btn = l.findViewById<Button>(ru.trmedia.trbtlservice.comment.R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l)
+            .setView(l, 0, 48, 0, 48)
             .setCancelable(false)
             .create()
 
@@ -127,6 +129,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                 if (chb.isChecked) {
                     prefs.putBoolean(SHOW_SAFE, false)
                 }
+                dialog.dismiss()
                 initializeWebView()
             }
         }
