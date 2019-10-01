@@ -4,6 +4,8 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
@@ -15,11 +17,24 @@ import kotlinx.android.synthetic.main.activity_game.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.trmedia.trbtlservice.comment.App
-import ru.trmedia.trbtlservice.comment.R
 import ru.trmedia.trbtlservice.comment.data.AppPreferences
 import ru.trmedia.trbtlservice.comment.di.module.GameModule
 import ru.trmedia.trbtlservice.comment.presentation.OneModel
 import javax.inject.Inject
+import android.widget.SeekBar
+import android.R.attr.bottom
+import android.R.attr.top
+import android.R.attr.left
+import android.R.attr.right
+import android.opengl.ETC1.getHeight
+import androidx.constraintlayout.solver.widgets.WidgetContainer.getBounds
+import android.view.View.OnTouchListener
+import android.R.attr.bottom
+import android.R.attr.top
+import android.R.attr.left
+import android.R.attr.right
+import android.opengl.ETC1.getHeight
+import androidx.constraintlayout.solver.widgets.WidgetContainer.getBounds
 
 
 class GameActivity : MvpAppCompatActivity(), GameView {
@@ -42,7 +57,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
-        setContentView(R.layout.activity_game)
+        setContentView(ru.trmedia.trbtlservice.comment.R.layout.activity_game)
 
         MobileAds.initialize(this)
 
@@ -64,7 +79,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             Glide.with(baseContext)
                 .load(prefs.getString(AppPreferences.PHOTO))
                 .apply(RequestOptions.circleCropTransform())
-                .placeholder(R.drawable.ic_user)
+                .placeholder(ru.trmedia.trbtlservice.comment.R.drawable.ic_user)
                 .into(ivAvatar)
 
             oneModel.punishment = prefs.getString(AppPreferences.PUNISHMENT) ?: ""
@@ -101,33 +116,95 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 .create().show()
         }
 
-        btnRefresh.setOnClickListener { v ->
+//        seekBar2.setOnTouchListener(OnTouchListener { v, event ->
+//            if ((event.action == MotionEvent.ACTION_MOVE || event.action == MotionEvent.ACTION_HOVER_MOVE) && event.action != MotionEvent.ACTION_BUTTON_PRESS) {
+////                val seekBarThumbRect = seekBar2.thumb.bounds
+////                val seekBarHeight = seekBar2.width
+////                if (seekBarThumbRect.bottom - (seekBarThumbRect.top - seekBarThumbRect.bottom) / 2 < Math.abs(
+////                        seekBarHeight - event.x
+////                    ) &&
+////                    seekBarThumbRect.top + (seekBarThumbRect.top - seekBarThumbRect.bottom) / 2 > Math.abs(
+////                        seekBarHeight - event.x
+////                    ) &&
+////                    seekBarThumbRect.right < event.y &&
+////                    seekBarThumbRect.left > event.y
+////                )
+//                return@OnTouchListener false
+//            }
+//            true
+//        })
 
-            if (btnComment.isSelected) {
-                count++
+        seekBar2.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
 
-                tvPoints.text = count.toString()
+            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
+                var a = 5
             }
 
-            if (round == maxRoundCount) {
-                isGameOver = true
-                AlertDialog.Builder(this)
-                    .setMessage("Вы набрали $count баллов за игру! Хотите начать новую игру или выйти?")
-                    .setCancelable(false)
-                    .setNegativeButton("Новая игра") { _, _ -> startNewGame() }
-                    .setPositiveButton("Выход") { _, _ -> finish() }
-                    .create().show()
-            } else {
-                gamePresenter.getRandomUser()
-                btnComment.isSelected = true
-                btnPunishment.isSelected = false
-                round++
-//                val toast = Toast.makeText(this, "Раунд $round", Toast.LENGTH_SHORT)
-//                toast.setGravity(Gravity.TOP, 0, 0)
-//                toast.show()
-                tvRaund.text = "Раунд $round"
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                if (seekBar.progress != 0) {
+                    var k = 6
+                } else {
+                    var r = seekBar.progress
+                    var t = 8
+                }
             }
-        }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                if (seekBar.progress == 100) {
+                    if (btnComment.isSelected) {
+                        count++
+
+                        tvPoints.text = count.toString()
+                    }
+
+                    if (round == maxRoundCount) {
+                        isGameOver = true
+                        AlertDialog.Builder(seekBar2.context)
+                            .setMessage("Вы набрали $count баллов за игру! Хотите начать новую игру или выйти?")
+                            .setCancelable(false)
+                            .setNegativeButton("Новая игра") { _, _ -> startNewGame() }
+                            .setPositiveButton("Выход") { _, _ -> finish() }
+                            .create().show()
+                    } else {
+                        gamePresenter.getRandomUser()
+                        btnComment.isSelected = true
+                        btnPunishment.isSelected = false
+                        round++
+                        tvRaund.text = "Раунд $round"
+                    }
+                }
+
+                seekBar2.progress = 0
+            }
+        })
+
+//        btnRefresh.setOnClickListener { v ->
+//
+//            if (btnComment.isSelected) {
+//                count++
+//
+//                tvPoints.text = count.toString()
+//            }
+//
+//            if (round == maxRoundCount) {
+//                isGameOver = true
+//                AlertDialog.Builder(this)
+//                    .setMessage("Вы набрали $count баллов за игру! Хотите начать новую игру или выйти?")
+//                    .setCancelable(false)
+//                    .setNegativeButton("Новая игра") { _, _ -> startNewGame() }
+//                    .setPositiveButton("Выход") { _, _ -> finish() }
+//                    .create().show()
+//            } else {
+//                gamePresenter.getRandomUser()
+//                btnComment.isSelected = true
+//                btnPunishment.isSelected = false
+//                round++
+////                val toast = Toast.makeText(this, "Раунд $round", Toast.LENGTH_SHORT)
+////                toast.setGravity(Gravity.TOP, 0, 0)
+////                toast.show()
+//                tvRaund.text = "Раунд $round"
+//            }
+//        }
 
         btnComment.setOnClickListener { v ->
             tvToDo.text = oneModel.comment
@@ -159,17 +236,17 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     private fun showRulesDialog() {
         val l = layoutInflater.inflate(
-            R.layout.dialog_rules,
+            ru.trmedia.trbtlservice.comment.R.layout.dialog_rules,
             null
         )
 
-        val btn = l.findViewById<Button>(R.id.btnAgree)
+        val btn = l.findViewById<Button>(ru.trmedia.trbtlservice.comment.R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
             .setView(l, 0, 48, 0, 48)
             .create()
 
-        dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog.window?.setBackgroundDrawableResource(ru.trmedia.trbtlservice.comment.R.color.transparent)
         dialog.show()
 
         btn.setOnClickListener { v -> dialog.dismiss() }

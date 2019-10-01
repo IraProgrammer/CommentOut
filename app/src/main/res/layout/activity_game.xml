@@ -129,7 +129,7 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/btnRefresh"
+            android:layout_above="@+id/seekBar2"
             android:layout_alignParentTop="true">
 
             <TextView
@@ -142,15 +142,17 @@
                 android:text="иии" />
         </androidx.core.widget.NestedScrollView>
 
-        <Button
-            android:id="@+id/btnRefresh"
+        <SeekBar
+            android:id="@+id/seekBar2"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_above="@+id/adView"
+            android:splitTrack="false"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/ic_buttondown"
-            android:text="ВЫПОЛНЕНО"
-            android:textColor="@color/white" />
+            android:max="100"
+            android:progress="0"
+            android:progressDrawable="@drawable/seekbar_gradient"
+            android:thumb="@drawable/seekbar_thumb" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"

@@ -1,0 +1,15 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <item>
+        <shape>
+            <size
+                android:height="42dp"
+                android:width="42dp" />
+
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+    <item android:drawable="@drawable/finger"/>
+
+</layer-list>
