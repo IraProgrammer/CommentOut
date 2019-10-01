@@ -18,30 +18,29 @@ import java.util.concurrent.Executors
 @Module
 class DatabaseModule {
 
-    lateinit var trainDB: AppDatabase
+    lateinit var roomDatabase: AppDatabase
 
     @Provides
     @PerApplication
     fun provideDatabase(@Named("AppContext") context: Context): AppDatabase {
 
-        trainDB = Room.databaseBuilder(
+        roomDatabase = Room.databaseBuilder(
             context,
             AppDatabase::class.java, DATABASE_NAME
         )
-            .allowMainThreadQueries()
             .addCallback(object : RoomDatabase.Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     Executors.newSingleThreadScheduledExecutor()
                         .execute {
                             super.onCreate(db)
-                            trainDB.commentDao().insert(getComments())
-                            trainDB.punishmentDao().insert(getPunishments())
+                            roomDatabase.commentDao().insert(getComments())
+                            roomDatabase.punishmentDao().insert(getPunishments())
                         }
                 }
             })
             .build()
 
-        return trainDB
+        return roomDatabase
     }
 
     private fun getComments(): List<EvilComment> {

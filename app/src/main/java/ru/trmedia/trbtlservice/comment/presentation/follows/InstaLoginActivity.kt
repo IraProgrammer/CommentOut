@@ -137,10 +137,9 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     private fun onShowLoading() {
         llProgress.visibility = View.VISIBLE
-
-        wvInsta.layoutParams = ConstraintLayout.LayoutParams(500, 800)
-
         pbHorizontal.visibility = View.VISIBLE
+
+        wvInsta.layoutParams = ConstraintLayout.LayoutParams(300, 500)
 
         progressAnimator = ObjectAnimator.ofInt(pbHorizontal, "progress", 0, 10000)
         progressAnimator?.addListener(onEnd = {

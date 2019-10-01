@@ -14,11 +14,8 @@ interface FollowDao {
     fun insert(follows: List<Follow>): Completable
 
     @Query("DELETE FROM Follow")
-    fun delete()
+    fun delete(): Completable
 
     @Query("SELECT * FROM Follow")
     fun getAll(): Single<List<Follow>>
-
-    @Query("SELECT * FROM Follow")
-    fun getAllS(): List<Follow>
 }

@@ -18,7 +18,6 @@ import ru.trmedia.trbtlservice.comment.App
 import ru.trmedia.trbtlservice.comment.R
 import ru.trmedia.trbtlservice.comment.data.AppPreferences
 import ru.trmedia.trbtlservice.comment.di.module.GameModule
-import ru.trmedia.trbtlservice.comment.domain.Follow
 import ru.trmedia.trbtlservice.comment.presentation.OneModel
 import javax.inject.Inject
 
@@ -31,10 +30,12 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @Inject
     lateinit var prefs: AppPreferences
 
-    private var count = 0
-    private var raund = 1
+    private var maxRoundCount = 6
 
-    var oneModel = OneModel("", "", "", "")
+    private var count = 0
+    private var round = 1
+
+    private var oneModel = OneModel("", "", "", "")
 
     private var isGameOver = false
 
@@ -65,6 +66,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 .apply(RequestOptions.circleCropTransform())
                 .placeholder(R.drawable.ic_user)
                 .into(ivAvatar)
+
+            oneModel.punishment = prefs.getString(AppPreferences.PUNISHMENT) ?: ""
 
             tvRaund.text = prefs.getString(AppPreferences.RAUND)
 
@@ -106,7 +109,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 tvPoints.text = count.toString()
             }
 
-            if (raund == 6) {
+            if (round == maxRoundCount) {
                 isGameOver = true
                 AlertDialog.Builder(this)
                     .setMessage("Вы набрали $count баллов за игру! Хотите начать новую игру или выйти?")
@@ -118,11 +121,11 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 gamePresenter.getRandomUser()
                 btnComment.isSelected = true
                 btnPunishment.isSelected = false
-                raund++
-//                val toast = Toast.makeText(this, "Раунд $raund", Toast.LENGTH_SHORT)
+                round++
+//                val toast = Toast.makeText(this, "Раунд $round", Toast.LENGTH_SHORT)
 //                toast.setGravity(Gravity.TOP, 0, 0)
 //                toast.show()
-                tvRaund.text = "Раунд $raund"
+                tvRaund.text = "Раунд $round"
             }
         }
 
@@ -144,7 +147,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         //this.recreate()
 
         isGameOver = false
-        raund = 1
+        round = 1
         count = 0
         tvPoints.text = "0"
         gamePresenter.getRandomUser()

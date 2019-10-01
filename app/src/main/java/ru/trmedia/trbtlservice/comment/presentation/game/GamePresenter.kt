@@ -64,9 +64,9 @@ class GamePresenter : MvpPresenter<GameView>() {
         comments: List<EvilComment>,
         punishments: List<Punishment>
     ): OneModel {
-        val follow = follows[getRandom(USERS_SET, follows.size - 1)]
-        val comment = comments[getRandom(COMMENTS_SET, comments.size - 1)]
-        val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size - 1)]
+        val follow = follows[getRandom(USERS_SET, follows.size)]
+        val comment = comments[getRandom(COMMENTS_SET, comments.size)]
+        val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size)]
 
         return OneModel(follow.username, follow.profilePictureUrl, comment.text, punishment.text)
     }
@@ -74,7 +74,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     private fun getRandom(key: String, bound: Int): Int {
         var set = prefs.getSet(key)
 
-        if (set.size == bound + 1) {
+        if (set.size == bound) {
             set = HashSet()
             prefs.clearSet(key)
         }

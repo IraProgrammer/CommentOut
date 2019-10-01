@@ -27,10 +27,9 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
     }
 
     fun saveFollowsToDb(follows: List<Follow>) {
-        db.followDao().delete()
-
         compositeDisposable.add(
             db.followDao().insert(follows)
+                .startWith(db.followDao().delete())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

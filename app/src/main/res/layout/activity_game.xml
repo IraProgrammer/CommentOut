@@ -51,47 +51,36 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/llProfileInfo"
+        <ImageView
+            android:id="@+id/ivCircle"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_above="@+id/llButtons"
+            android:layout_above="@+id/tvUsername"
             android:layout_below="@+id/rlTopPanel"
-            android:orientation="vertical">
+            android:layout_centerHorizontal="true"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_circle" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/ivAvatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/ivCircle"
+            android:layout_alignTop="@+id/ivCircle"
+            android:layout_alignEnd="@+id/ivCircle"
+            android:layout_alignBottom="@+id/ivCircle"
+            android:layout_margin="20dp"
+            android:src="@drawable/ic_user" />
 
-                <ImageView
-                    android:id="@+id/ivCircle"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:layout_centerInParent="true"
-                    android:src="@drawable/ic_circle" />
-
-                <ImageView
-                    android:id="@+id/ivAvatar"
-                    android:layout_margin="24dp"
-                    android:layout_alignStart="@+id/ivCircle"
-                    android:layout_alignTop="@+id/ivCircle"
-                    android:layout_alignEnd="@+id/ivCircle"
-                    android:layout_alignBottom="@+id/ivCircle"
-                    android:src="@drawable/ic_user"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content" />
-            </RelativeLayout>
-
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
-                android:text="bvzdcdff"
-                android:textColor="@color/white" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/llButtons"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="bvzdcdff"
+            android:textColor="@color/white" />
 
         <LinearLayout
             android:id="@+id/llButtons"
@@ -145,9 +134,9 @@
 
             <TextView
                 android:id="@+id/tvToDo"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_margin="8dp"
                 android:gravity="center_horizontal"
                 android:text="иии" />
@@ -160,7 +149,8 @@
             android:layout_above="@+id/adView"
             android:layout_centerHorizontal="true"
             android:background="@drawable/ic_buttondown"
-            android:text="ВЫПОЛНЕНО" />
+            android:text="ВЫПОЛНЕНО"
+            android:textColor="@color/white" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
