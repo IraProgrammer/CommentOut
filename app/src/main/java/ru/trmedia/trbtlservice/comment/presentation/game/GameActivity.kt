@@ -184,6 +184,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             prefs.putString(AppPreferences.RAUND, tvRaund.text.toString())
             prefs.putString(AppPreferences.POINTS, tvPoints.text.toString())
             prefs.putBoolean(AppPreferences.NEED_NEW_GAME, false)
+        } else {
+            prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
         }
         super.onPause()
     }
