@@ -31,7 +31,19 @@ class GamePresenter : MvpPresenter<GameView>() {
     @Inject
     lateinit var prefs: AppPreferences
 
+    private var isGameOver = false
+
+    private var points = 0
+
+    private var round = 1
+
+    private var maxRoundCount = 6
+
+    private var oneModel = OneModel("", "", "", "")
+
     private var compositeDisposable = CompositeDisposable()
+
+    enum class Action { COMMENT, PUNISHMENT }
 
     init {
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
@@ -49,12 +61,13 @@ class GamePresenter : MvpPresenter<GameView>() {
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess { oneModel -> this.oneModel = oneModel }
                 .subscribe(
                     { oneModel ->
-                        viewState.onShowNextRaund(oneModel)
+                        switchAction(Action.COMMENT)
+                        viewState.onShowNextRound(oneModel)
                     },
                     { throwable ->
-                        var a = 7
                     })
         )
     }
@@ -95,5 +108,87 @@ class GamePresenter : MvpPresenter<GameView>() {
     override fun onDestroy() {
         compositeDisposable.clear()
         super.onDestroy()
+    }
+
+    fun restoreGame() {
+        oneModel.comment = prefs.getString(AppPreferences.COMMENT)
+        oneModel.punishment = prefs.getString(AppPreferences.PUNISHMENT)
+        oneModel.username = prefs.getString(AppPreferences.USER_IN_CIRCLE)
+        oneModel.profilePictureUrl = prefs.getString(AppPreferences.PHOTO)
+
+        viewState.onSetRound(prefs.getString(AppPreferences.ROUND).toInt())
+        viewState.onSetPoints(prefs.getString(AppPreferences.POINTS).toInt())
+
+        viewState.onStateRestored(oneModel)
+    }
+
+    fun refreshComment() {
+        viewState.onSetComment(oneModel.comment)
+    }
+
+    fun refreshPunishment() {
+        viewState.onSetPunishment(oneModel.punishment)
+    }
+
+    fun switchAction(action: Action) {
+        when {
+            (action == Action.COMMENT) -> viewState.commentActive()
+            (action == Action.PUNISHMENT) -> viewState.punishmentActive()
+        }
+    }
+
+    fun saveGame() {
+        prefs.putString(AppPreferences.COMMENT, oneModel.comment)
+        prefs.putString(AppPreferences.PUNISHMENT, oneModel.punishment)
+        prefs.putString(AppPreferences.USER_IN_CIRCLE, oneModel.username)
+        prefs.putString(AppPreferences.PHOTO, oneModel.profilePictureUrl)
+        prefs.putString(AppPreferences.ROUND, round.toString())
+        prefs.putString(AppPreferences.POINTS, points.toString())
+        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, false)
+    }
+
+    fun setNeedNewGame() {
+        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
+    }
+
+    fun updatePoints() {
+        points++
+        viewState.onSetPoints(points)
+    }
+
+    fun nextRound(action: Action) {
+        if (action == Action.COMMENT) {
+            updatePoints()
+        }
+
+        if (round == maxRoundCount) {
+            isGameOver = true
+            viewState.showGameOverDialog()
+        } else {
+            getRandomUser()
+            round++
+            viewState.onSetRound(round)
+        }
+    }
+
+    fun startNewGame() {
+        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
+
+        isGameOver = false
+        round = 1
+        points = 0
+        viewState.onSetPoints(points)
+        viewState.onSetRound(round)
+
+        getRandomUser()
+        switchAction(Action.COMMENT)
+    }
+
+    fun saveStateIfNeed() {
+        if (!isGameOver) {
+            saveGame()
+        } else {
+            setNeedNewGame()
+        }
     }
 }

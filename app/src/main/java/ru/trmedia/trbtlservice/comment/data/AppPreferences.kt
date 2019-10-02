@@ -7,8 +7,8 @@ class AppPreferences(context: Context) {
 
     private val preferences = context.getSharedPreferences(APP_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
 
-    fun getString(key: String): String? {
-        return preferences.getString(key, null)
+    fun getString(key: String): String {
+        return preferences.getString(key, null) ?: ""
     }
 
     fun putString(key: String, value: String) {
@@ -52,19 +52,19 @@ class AppPreferences(context: Context) {
     }
 
     companion object {
-        val APP_PREFERENCES_FILE_NAME = "userdata"
-        val USER_NAME = "username"
-        val USERS_SET = "usersSet"
-        val COMMENTS_SET = "commentsSet"
-        val PUNISHMENT_SET = "punishmentSet"
-        val SHOW_SAFE = "showSafe"
-        val SHOW_RULES = "showRules"
-        val COMMENT = "comment"
-        val PUNISHMENT = "punishment"
-        val USER_IN_CIRCLE = "user_in_circle"
-        val PHOTO = "photo"
-        val RAUND = "raund"
-        val NEED_NEW_GAME = "needNewGame"
-        val POINTS = "points"
+        const val APP_PREFERENCES_FILE_NAME = "userdata"
+        const val USER_NAME = "username"
+        const val USERS_SET = "usersSet"
+        const val COMMENTS_SET = "commentsSet"
+        const val PUNISHMENT_SET = "punishmentSet"
+        const val SHOW_SAFE = "showSafe"
+        const val SHOW_RULES = "showRules"
+        const val COMMENT = "comment"
+        const val PUNISHMENT = "punishment"
+        const val USER_IN_CIRCLE = "user_in_circle"
+        const val PHOTO = "photo"
+        const val ROUND = "raund"
+        const val NEED_NEW_GAME = "needNewGame"
+        const val POINTS = "points"
     }
 }

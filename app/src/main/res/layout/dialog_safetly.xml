@@ -37,7 +37,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
                     android:text="@string/safe"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -46,11 +46,12 @@
         <CheckBox
             android:id="@+id/chbDontShowAgain"
             android:layout_width="match_parent"
-            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/btnAgree"
             android:layout_margin="8dp"
             android:text="Не показывать больше"
-            android:layout_above="@id/btnAgree"
-            android:layout_height="wrap_content"/>
+            android:textColor="@color/white"
+            app:buttonTint="@color/white" />
 
         <Button
             android:id="@+id/btnAgree"
