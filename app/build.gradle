@@ -13,7 +13,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "ru.trmedia.trbtlservice.comment"
+        applicationId "ru.islab.evilcomments"
         minSdkVersion 19
         targetSdkVersion 29
         multiDexEnabled true
@@ -22,9 +22,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-
         debug {
             debuggable = true
+            versionNameSuffix "-DEBUG"
         }
         release {
             minifyEnabled = true
