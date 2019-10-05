@@ -2,6 +2,7 @@ package ru.islab.evilcomments.presentation.follows
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -27,6 +28,7 @@ import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import ru.islab.evilcomments.App
+import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_ADULT
 import ru.islab.evilcomments.di.module.InstaLoginModule
 import javax.inject.Inject
 
@@ -97,12 +99,19 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun initUI() {
-        if (prefs.getBoolean(SHOW_SAFE)) {
-
-            showSafetlyDialog()
-
-        } else {
-            initializeWebView()
+        when {
+            prefs.getBoolean(SHOW_ADULT) -> AlertDialog.Builder(this)
+                .setTitle("Внимание!")
+                .setMessage("Данное приложение строго для лиц, достигших возраста 18 лет.")
+                .setPositiveButton("Мне есть 18 лет") { _, _ ->
+                    prefs.putBoolean(SHOW_ADULT, false)
+                    showSafetlyDialog()
+                }
+                .setNegativeButton("Выход") { _, _ -> finish() }
+                .create()
+                .show()
+            prefs.getBoolean(SHOW_SAFE) -> showSafetlyDialog()
+            else -> initializeWebView()
         }
     }
 

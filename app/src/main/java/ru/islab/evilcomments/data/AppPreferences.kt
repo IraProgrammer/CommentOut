@@ -58,6 +58,7 @@ class AppPreferences(context: Context) {
         const val COMMENTS_SET = "commentsSet"
         const val PUNISHMENT_SET = "punishmentSet"
         const val SHOW_SAFE = "showSafe"
+        const val SHOW_ADULT = "showAdult"
         const val SHOW_RULES = "showRules"
         const val COMMENT = "comment"
         const val PUNISHMENT = "punishment"
