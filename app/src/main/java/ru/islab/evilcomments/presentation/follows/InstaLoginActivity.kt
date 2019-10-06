@@ -155,7 +155,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 //            pbHorizontal.visibility = View.GONE
 //            tvText.text = "Готово!"
 //        })
-        progressAnimator?.duration = 16000
+        progressAnimator?.duration = 38000
         progressAnimator?.interpolator = LinearInterpolator()
         progressAnimator?.start()
     }
@@ -278,7 +278,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                             }
                         }
                     })
-            }, 7000
+            }, 30000
         )
     }
 

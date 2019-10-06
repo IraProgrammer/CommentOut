@@ -199,7 +199,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     fun nextStep(action: Action) {
         if (canEnable) {
             canEnable = false
-            nextRound(action)
+        nextRound(action)
         } else {
             viewState.showToast()
         }

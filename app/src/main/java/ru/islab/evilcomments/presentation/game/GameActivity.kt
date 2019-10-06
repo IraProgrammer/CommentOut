@@ -207,7 +207,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     private fun copyCommentToBuffer(comment: String) {
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip = ClipData.newPlainText("label", comment)
+        val clip = ClipData.newPlainText("label", comment.substring(1, comment.length - 1))
         clipboard.setPrimaryClip(clip)
     }
 }
