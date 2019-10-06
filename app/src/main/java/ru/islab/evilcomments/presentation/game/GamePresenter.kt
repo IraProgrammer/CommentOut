@@ -1,10 +1,12 @@
 package ru.islab.evilcomments.presentation.game
 
+import android.os.Handler
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_game.*
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.islab.evilcomments.App
@@ -30,6 +32,8 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     @Inject
     lateinit var prefs: AppPreferences
+
+    private var canEnable = true
 
     private var isGameOver = false
 
@@ -190,5 +194,17 @@ class GamePresenter : MvpPresenter<GameView>() {
         } else {
             setNeedNewGame()
         }
+    }
+
+    fun nextStep(action: Action) {
+        if (canEnable) {
+            canEnable = false
+            nextRound(action)
+        } else {
+            viewState.showToast()
+        }
+        Handler().postDelayed({
+            canEnable = true
+        }, 10000)
     }
 }

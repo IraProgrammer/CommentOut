@@ -102,12 +102,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         when {
             prefs.getBoolean(SHOW_ADULT) -> AlertDialog.Builder(this)
                 .setTitle("Внимание!")
-                .setMessage("Данное приложение строго для лиц, достигших возраста 18 лет.")
-                .setPositiveButton("Мне есть 18 лет") { _, _ ->
+                .setMessage("Используя данное приложение, Вы подтверждаете, что несёте полную ответственность за свои действия.\nДанное приложение строго для лиц, достигших возраста 18 лет.")
+                .setNegativeButton("Мне есть 18 лет") { _, _ ->
                     prefs.putBoolean(SHOW_ADULT, false)
                     showSafetlyDialog()
                 }
-                .setNegativeButton("Выход") { _, _ -> finish() }
+                .setPositiveButton("Выход") { _, _ -> finish() }
                 .create()
                 .show()
             prefs.getBoolean(SHOW_SAFE) -> showSafetlyDialog()
@@ -151,23 +151,22 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         wvInsta.layoutParams = ConstraintLayout.LayoutParams(300, 500)
 
         progressAnimator = ObjectAnimator.ofInt(pbHorizontal, "progress", 0, 10000)
-        progressAnimator?.addListener(onEnd = {
-            pbHorizontal.visibility = View.GONE
-            tvText.text = "Готово!"
-        })
-        progressAnimator?.duration = 15000
+//        progressAnimator?.addListener(onEnd = {
+//            pbHorizontal.visibility = View.GONE
+//            tvText.text = "Готово!"
+//        })
+        progressAnimator?.duration = 16000
         progressAnimator?.interpolator = LinearInterpolator()
         progressAnimator?.start()
     }
 
     override fun startGame() {
-        pbHorizontal.visibility = View.GONE
         btnStartGame.visibility = View.VISIBLE
 
         val anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
         btnStartGame.startAnimation(anim)
 
-        tvText.text = "Готово!"
+        //tvText.text = "Готово!"
     }
 
     private fun clickFollowers() {
@@ -269,12 +268,17 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                     }
                                 }
                             }
+                            pbHorizontal.visibility = View.GONE
                             if (canParse && follows.size > 0) {
+                                tvText.visibility = View.GONE
                                 instaLoginPresenter.saveFollowsToDb(follows)
+                            } else {
+                                tvText.text =
+                                    "К сожалению, Вы ни на кого не подписаны. Для продолжения игры необходимо наличие подписок на Вашем аккаунте."
                             }
                         }
                     })
-            }, 10000
+            }, 7000
         )
     }
 

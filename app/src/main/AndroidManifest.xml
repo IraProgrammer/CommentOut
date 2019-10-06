@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity
+            android:theme="@style/AppTheme.Game"
             android:name="ru.islab.evilcomments.presentation.game.GameActivity"
             android:screenOrientation="portrait"></activity>
 

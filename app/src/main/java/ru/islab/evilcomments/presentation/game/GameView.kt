@@ -13,4 +13,5 @@ interface GameView : MvpView {
     fun onSetPoints(points: Int)
     fun showGameOverDialog()
     fun onSetRound(round: Int)
+    fun showToast()
 }

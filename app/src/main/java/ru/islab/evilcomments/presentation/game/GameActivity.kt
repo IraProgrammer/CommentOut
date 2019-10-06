@@ -4,12 +4,16 @@ import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
+import android.view.Gravity
 import android.widget.Button
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_game.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
@@ -60,7 +64,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         gamePresenter.switchAction(GamePresenter.Action.COMMENT)
 
         btnRefresh.setOnClickListener { v ->
-            gamePresenter.nextRound(if (btnComment.isSelected) GamePresenter.Action.COMMENT else GamePresenter.Action.PUNISHMENT)
+            gamePresenter.nextStep(if (btnComment.isSelected) GamePresenter.Action.COMMENT else GamePresenter.Action.PUNISHMENT)
         }
 
         btnComment.setOnClickListener { v ->
@@ -72,6 +76,14 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             gamePresenter.refreshPunishment()
             gamePresenter.switchAction(GamePresenter.Action.PUNISHMENT)
         }
+    }
+
+    override fun showToast() {
+        Toast.makeText(
+            this,
+            "Нет-нет, не так быстро! Сначала выполни одно из заданий",
+            Toast.LENGTH_SHORT
+        ).show()
     }
 
     override fun showGameOverDialog() {

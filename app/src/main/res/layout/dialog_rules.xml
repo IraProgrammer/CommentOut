@@ -3,20 +3,21 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    app:cardBackgroundColor="#99000000"
     android:layout_height="wrap_content"
+    app:cardBackgroundColor="#99000000"
     app:cardCornerRadius="6dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginBottom="16dp"
             android:text="Как играть?"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -32,7 +33,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -40,6 +40,12 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/rules"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/luck"
                     android:textColor="@color/white" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
@@ -49,11 +55,11 @@
             style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_margin="8dp"
             android:text="Понятно"
-            android:textColor="@color/colorAccent"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"/>
+            android:textColor="@color/colorAccent" />
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
