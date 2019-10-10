@@ -28,7 +28,9 @@ import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import ru.islab.evilcomments.App
+import ru.islab.evilcomments.BuildConfig
 import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_ADULT
+import ru.islab.evilcomments.data.AppPreferences.Companion.VERSION_CODE
 import ru.islab.evilcomments.di.module.InstaLoginModule
 import javax.inject.Inject
 
@@ -54,23 +56,32 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.islab.evilcomments.R.layout.activity_insta_login)
 
-        if (!prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
-            val intent = Intent(baseContext, GameActivity::class.java)
-            startActivity(intent)
-            finish()
+        if (BuildConfig.VERSION_CODE > prefs.getInt(VERSION_CODE)) {
+            instaLoginPresenter.putDataToDb()
+        } else {
+
+            if (!prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
+                val intent = Intent(baseContext, GameActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
+            initUI()
         }
 
         instaLoginPresenter.checkNetwork()
 
         instaLoginPresenter.observeNetwork(baseContext)
 
-        initUI()
-
         btnStartGame.setOnClickListener { v ->
             val intent = Intent(baseContext, GameActivity::class.java)
             startActivity(intent)
             finish()
         }
+    }
+
+    override fun saveVersionCode() {
+        prefs.putInt(VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
     override fun noNetworkInStart() {
@@ -98,7 +109,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         wvInsta.reload()
     }
 
-    private fun initUI() {
+    override fun initUI() {
         when {
             prefs.getBoolean(SHOW_ADULT) -> AlertDialog.Builder(this)
                 .setTitle("Внимание!")

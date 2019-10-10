@@ -5,7 +5,8 @@ import android.content.Context
 
 class AppPreferences(context: Context) {
 
-    private val preferences = context.getSharedPreferences(APP_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
+    private val preferences =
+        context.getSharedPreferences(APP_PREFERENCES_FILE_NAME, Context.MODE_PRIVATE)
 
     fun getString(key: String): String {
         return preferences.getString(key, null) ?: ""
@@ -27,8 +28,18 @@ class AppPreferences(context: Context) {
         editor.apply()
     }
 
+    fun getInt(key: String): Int {
+        return preferences.getInt(key, 0)
+    }
+
+    fun putInt(key: String, value: Int) {
+        val editor = preferences.edit()
+        editor.putInt(key, value)
+        editor.apply()
+    }
+
     fun getSet(key: String): MutableSet<String> {
-        return preferences.getStringSet(key, null) ?: HashSet()
+        return (preferences.getStringSet(key, null) ?: HashSet()) as MutableSet<String>
     }
 
     fun addToSet(key: String, value: String) {
@@ -67,5 +78,6 @@ class AppPreferences(context: Context) {
         const val ROUND = "raund"
         const val NEED_NEW_GAME = "needNewGame"
         const val POINTS = "points"
+        const val VERSION_CODE = "versionCode"
     }
 }

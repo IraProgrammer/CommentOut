@@ -10,6 +10,7 @@ import moxy.MvpPresenter
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.data.database.AppDatabase
 import ru.islab.evilcomments.di.module.InstaLoginModule
+import ru.islab.evilcomments.domain.DataHelper
 import ru.islab.evilcomments.domain.Follow
 import javax.inject.Inject
 
@@ -19,7 +20,10 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
     @Inject
     lateinit var db: AppDatabase
 
-    val compositeDisposable = CompositeDisposable()
+    @Inject
+    lateinit var dataHelper: DataHelper
+
+    private val compositeDisposable = CompositeDisposable()
 
     init {
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
@@ -52,7 +56,6 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
     }
 
     fun observeNetwork(context: Context) {
-
         compositeDisposable.add(
             ReactiveNetwork
                 .observeNetworkConnectivity(context)
@@ -65,6 +68,18 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
                         viewState.networkFailed()
                     }
                 })
+    }
+
+    fun putDataToDb() {
+        compositeDisposable.add(
+            db.commentDao().insert(dataHelper.commentsList)
+                .andThen(db.punishmentDao().insert(dataHelper.punishmentsList))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewState.saveVersionCode()
+                    viewState.initUI() }, { throwable -> })
+        )
     }
 
     override fun onDestroy() {
