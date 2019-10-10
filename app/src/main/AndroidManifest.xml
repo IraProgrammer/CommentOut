@@ -9,15 +9,15 @@
         android:name="ru.islab.evilcomments.App"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
-        android:roundIcon="@mipmap/icon_round"
         android:isGame="true"
         android:label="@string/app_name"
+        android:roundIcon="@mipmap/icon_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:theme="@style/AppTheme.Launcher"
             android:name="ru.islab.evilcomments.presentation.follows.InstaLoginActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,9 +25,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/AppTheme.Game"
             android:name="ru.islab.evilcomments.presentation.game.GameActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Game"></activity>
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
