@@ -10,6 +10,7 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
@@ -149,6 +150,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             .load(url)
             .apply(RequestOptions.circleCropTransform())
             .placeholder(R.drawable.ic_user)
+            .transition(DrawableTransitionOptions.withCrossFade())
             .into(ivAvatar)
     }
 

@@ -33,7 +33,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     @Inject
     lateinit var prefs: AppPreferences
 
-    private var canEnable = true
+    private var canEnable = false
 
     private var isGameOver = false
 
@@ -199,7 +199,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     fun nextStep(action: Action) {
         if (canEnable) {
             canEnable = false
-        nextRound(action)
+            nextRound(action)
         } else {
             viewState.showToast()
         }
