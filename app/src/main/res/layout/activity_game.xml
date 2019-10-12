@@ -27,7 +27,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="8dp"
-                android:background="@drawable/ic_reload" />
+                android:background="@drawable/ic_reload"
+                android:fontFamily="@font/text_signature" />
 
             <Button
                 android:id="@+id/tvRound"
@@ -36,8 +37,10 @@
                 android:layout_height="40dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/ic_oval_up"
+                android:fontFamily="@font/text_signature"
                 android:text="Раунд 1"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/ivHelp"
@@ -78,9 +81,11 @@
             android:layout_height="wrap_content"
             android:layout_above="@+id/llButtons"
             android:layout_marginBottom="20dp"
+            android:fontFamily="@font/text_all"
             android:gravity="center"
             android:text="bvzdcdff"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textSize="16sp" />
 
         <LinearLayout
             android:id="@+id/llButtons"
@@ -93,28 +98,38 @@
                 android:id="@+id/btnComment"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/states"
+                android:fontFamily="@font/text_signature"
                 android:text="КОММЕНТ"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/tvPoints"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/ic_buttoncenter"
+                android:fontFamily="@font/text_signature"
                 android:text="0"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textSize="28sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btnPunishment"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
+                android:layout_gravity="center"
                 android:layout_weight="1"
                 android:background="@drawable/states"
+                android:fontFamily="@font/text_signature"
                 android:text="НАКАЗАНИЕ"
-                android:textColor="@color/white" />
+                android:textColor="@color/white"
+                android:textStyle="bold" />
         </LinearLayout>
 
     </RelativeLayout>
@@ -137,21 +152,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:textIsSelectable="true"
                 android:layout_margin="8dp"
+                android:fontFamily="@font/text_task"
                 android:gravity="center_horizontal"
-                android:text="иии" />
+                android:textIsSelectable="true"
+                android:textSize="16sp"
+                android:textStyle="italic" />
         </androidx.core.widget.NestedScrollView>
 
         <Button
             android:id="@+id/btnRefresh"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="40dp"
             android:layout_above="@+id/adView"
             android:layout_centerHorizontal="true"
             android:background="@drawable/ic_buttondown"
+            android:fontFamily="@font/text_signature"
             android:text="ВЫПОЛНЕНО"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
@@ -161,6 +180,5 @@
             android:layout_centerHorizontal="true"
             app:adSize="SMART_BANNER"
             app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
-
     </RelativeLayout>
 </LinearLayout>

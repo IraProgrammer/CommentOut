@@ -26,9 +26,12 @@ import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_SAFE
 import ru.islab.evilcomments.domain.Follow
 import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import kotlinx.android.synthetic.main.activity_game.*
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.BuildConfig
+import ru.islab.evilcomments.R
 import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_ADULT
 import ru.islab.evilcomments.data.AppPreferences.Companion.VERSION_CODE
 import ru.islab.evilcomments.di.module.InstaLoginModule
@@ -46,9 +49,11 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     var progressAnimator: ObjectAnimator? = null
 
-    var canParse = true
-
     var isLoadingShownNow = false
+
+    val parsingHandler = Handler()
+
+    var parsingRunnable = Runnable {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(ru.islab.evilcomments.R.style.AppTheme)
@@ -89,10 +94,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun networkFailed() {
+        parsingHandler.removeCallbacks(parsingRunnable)
         if (llProgress.isVisible) {
             tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
             progressAnimator?.pause()
-            canParse = false
             pbHorizontal.visibility = View.GONE
             wvInsta.stopLoading()
         } else {
@@ -102,7 +107,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     override fun networkSuccessed() {
         pbHorizontal.visibility = View.VISIBLE
-        canParse = true
         llNoNetwork.visibility = View.GONE
         tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
         progressAnimator?.start()
@@ -111,16 +115,34 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     override fun initUI() {
         when {
-            prefs.getBoolean(SHOW_ADULT) -> AlertDialog.Builder(this)
-                .setTitle("Внимание!")
-                .setMessage("Используя данное приложение, Вы подтверждаете, что несёте полную ответственность за свои действия.\nДанное приложение строго для лиц, достигших возраста 18 лет.")
-                .setNegativeButton("Мне есть 18 лет") { _, _ ->
+            prefs.getBoolean(SHOW_ADULT) -> {
+                val l = layoutInflater.inflate(
+                    R.layout.dialog_adult,
+                    null
+                )
+
+                val tv = l.findViewById<TextView>(R.id.tvAdultText)
+                val btnExit = l.findViewById<Button>(R.id.btnExit)
+                val btnAgree = l.findViewById<Button>(R.id.btnAgree)
+
+                val dialog = AlertDialog.Builder(this)
+                    .setView(l)
+                    .setCancelable(false)
+                    .create()
+
+                dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+                dialog.show()
+
+                tv.text =
+                    "Используя данное приложение, Вы подтверждаете, что несёте полную ответственность за свои действия.\nДанное приложение строго для лиц, достигших возраста 18 лет."
+
+                btnAgree.setOnClickListener { v ->
                     prefs.putBoolean(SHOW_ADULT, false)
                     showSafetlyDialog()
+                    dialog.dismiss()
                 }
-                .setPositiveButton("Выход") { _, _ -> finish() }
-                .create()
-                .show()
+                btnExit.setOnClickListener { v -> finish() }
+            }
             prefs.getBoolean(SHOW_SAFE) -> showSafetlyDialog()
             else -> initializeWebView()
         }
@@ -162,10 +184,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         wvInsta.layoutParams = ConstraintLayout.LayoutParams(300, 500)
 
         progressAnimator = ObjectAnimator.ofInt(pbHorizontal, "progress", 0, 10000)
-//        progressAnimator?.addListener(onEnd = {
-//            pbHorizontal.visibility = View.GONE
-//            tvText.text = "Готово!"
-//        })
+        //progressAnimator?.addListener(onEnd = {
+        //pbHorizontal.visibility = View.GONE
+        //tvText.text = "Готово!"
+        // })
         progressAnimator?.duration = 38000
         progressAnimator?.interpolator = LinearInterpolator()
         progressAnimator?.start()
@@ -244,53 +266,54 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun parseFollowsWithDelay() {
-        Handler().postDelayed(
-            {
-                wvInsta.evaluateJavascript(
-                    "(function(){return window.document.body.outerHTML})();",
-                    object : ValueCallback<String> {
-                        override fun onReceiveValue(html: String) {
+        parsingRunnable = Runnable {
+            wvInsta.evaluateJavascript(
+                "(function(){return window.document.body.outerHTML})();",
+                object : ValueCallback<String> {
+                    override fun onReceiveValue(html: String) {
 
-                            Log.d("HTML", html)
+                        Log.d("HTML", html)
 
-                            val list = html.split("img alt=\\\"")
+                        val list = html.split("img alt=\\\"")
 
-                            val peoples = list.subList(1, list.size)
+                        val peoples = list.subList(1, list.size)
 
-                            val follows = ArrayList<Follow>()
+                        val follows = ArrayList<Follow>()
 
-                            for (i in peoples.indices) {
+                        for (i in peoples.indices) {
 
-                                val units = peoples[i].split("\"")
-                                val follow = Follow(0, "", "")
+                            val units = peoples[i].split("\"")
+                            val follow = Follow(0, "", "")
 
-                                for (j in units.indices) {
-                                    if (units[j].equals(" src=\\")) {
-                                        follow.profilePictureUrl =
-                                            units[j + 1].substring(0, units[j + 1].length - 1)
-                                        continue
-                                    } else if (units[j].equals(" title=\\") && units[j + 2].equals(
-                                            " href=\\"
-                                        )
-                                    ) {
-                                        follow.username =
-                                            units[j + 1].substring(0, units[j + 1].length - 1)
-                                        follows.add(follow)
-                                    }
+                            for (j in units.indices) {
+                                if (units[j].equals(" src=\\")) {
+                                    follow.profilePictureUrl =
+                                        units[j + 1].substring(0, units[j + 1].length - 1)
+                                    continue
+                                } else if (units[j].equals(" title=\\") && units[j + 2].equals(
+                                        " href=\\"
+                                    )
+                                ) {
+                                    follow.username =
+                                        units[j + 1].substring(0, units[j + 1].length - 1)
+                                    follows.add(follow)
                                 }
                             }
-                            pbHorizontal.visibility = View.GONE
-                            if (canParse && follows.size > 0) {
-                                tvText.visibility = View.GONE
-                                instaLoginPresenter.saveFollowsToDb(follows)
-                            } else {
-                                tvText.text =
-                                    "К сожалению, Вы ни на кого не подписаны. Для продолжения игры необходимо наличие подписок на Вашем аккаунте."
-                            }
                         }
-                    })
-            }, 30000
-        )
+                        pbHorizontal.visibility = View.GONE
+                        if (follows.size > 0) {
+                            tvText.visibility = View.GONE
+                            instaLoginPresenter.saveFollowsToDb(follows)
+                        } else {
+                            tvText.text =
+                                "К сожалению, Вы ни на кого не подписаны. Для продолжения игры необходимо наличие подписок на Вашем аккаунте."
+                        }
+                    }
+                })
+        }
+
+        parsingHandler.postDelayed(parsingRunnable, 30000)
+
     }
 
     override fun onDestroy() {

@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:fontFamily="@font/text_all"
             android:text="Как играть?"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -38,15 +39,19 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/text_all"
                     android:gravity="center"
                     android:text="@string/rules"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/text_all"
                     android:text="@string/luck"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -57,9 +62,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"
+            android:fontFamily="@font/text_all"
             android:text="Понятно"
-            android:textColor="@color/colorAccent" />
-
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

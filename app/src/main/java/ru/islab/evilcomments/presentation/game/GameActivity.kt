@@ -2,11 +2,13 @@ package ru.islab.evilcomments.presentation.game
 
 import android.content.*
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.view.Gravity
+import android.text.Html
+import android.text.SpannableString
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
@@ -14,14 +16,15 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.dialog_new_game.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.R
 import ru.islab.evilcomments.data.AppPreferences
 import ru.islab.evilcomments.di.module.GameModule
+import ru.islab.evilcomments.domain.Punishment
 import ru.islab.evilcomments.presentation.OneModel
 import javax.inject.Inject
 
@@ -88,12 +91,30 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     override fun showGameOverDialog() {
-        AlertDialog.Builder(this)
-            .setMessage("Вы набрали ${tvPoints.text} баллов за игру! Хотите начать новую игру или выйти?")
+        val l = layoutInflater.inflate(
+            R.layout.dialog_in_game_end,
+            null
+        )
+
+        val tv = l.findViewById<TextView>(R.id.tvDoYouWantNewGame)
+        val btnExit = l.findViewById<Button>(R.id.btnExit)
+        val btnNewGame = l.findViewById<Button>(R.id.btnNewGame)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(l)
             .setCancelable(false)
-            .setNegativeButton("Новая игра") { _, _ -> gamePresenter.startNewGame() }
-            .setPositiveButton("Выход") { _, _ -> finish() }
-            .create().show()
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog.show()
+
+        tv.text = "Вы набрали ${tvPoints.text} баллов за игру! Хотите начать новую игру или выйти?"
+
+        btnNewGame.setOnClickListener { v ->
+            dialog.dismiss()
+            gamePresenter.startNewGame()
+        }
+        btnExit.setOnClickListener { v -> finish() }
     }
 
     override fun onSetPoints(points: Int) {
@@ -101,11 +122,29 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     private fun showNewGameDialog() {
-        AlertDialog.Builder(this)
-            .setMessage("Вы действительнохотите начать новую игру?")
-            .setPositiveButton("Да") { _, _ -> gamePresenter.startNewGame() }
-            .setNegativeButton("Нет") { _, _ -> }
-            .create().show()
+        val l = layoutInflater.inflate(
+            R.layout.dialog_new_game,
+            null
+        )
+
+        val tv = l.findViewById<TextView>(R.id.tvDoYouWantNewGame)
+        val btnYes = l.findViewById<Button>(R.id.btnYes)
+        val btnNo = l.findViewById<Button>(R.id.btnNo)
+
+        val dialog = AlertDialog.Builder(this)
+            .setView(l)
+            .create()
+
+        dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+        dialog.show()
+
+        tv.text = "Вы действительно хотите начать новую игру?"
+
+        btnYes.setOnClickListener { v ->
+            dialog.dismiss()
+            gamePresenter.startNewGame()
+        }
+        btnNo.setOnClickListener { v -> dialog.dismiss() }
     }
 
     override fun commentActive() {
@@ -123,7 +162,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     override fun onSetPunishment(punishment: String) {
-        tvToDo.text = punishment
+        tvToDo.text = Html.fromHtml(punishment)
     }
 
     override fun onSetRound(round: Int) {
@@ -132,6 +171,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     override fun onStateRestored(oneModel: OneModel) {
         tvToDo.text = oneModel.comment
+
         tvUsername.text = oneModel.username
 
         loadPicture(oneModel.profilePictureUrl)

@@ -37,6 +37,8 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var isGameOver = false
 
+    private var delayMillis: Long = 3000
+
     private var points = 0
 
     private var round = 1
@@ -51,6 +53,17 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     init {
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
+    }
+
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        enableButtonWithDelay()
+    }
+
+    private  fun enableButtonWithDelay(){
+        Handler().postDelayed({
+            canEnable = true
+        }, delayMillis)
     }
 
     fun getRandomUser() {
@@ -203,8 +216,6 @@ class GamePresenter : MvpPresenter<GameView>() {
         } else {
             viewState.showToast()
         }
-        Handler().postDelayed({
-            canEnable = true
-        }, 10000)
+        enableButtonWithDelay()
     }
 }

@@ -7,9 +7,9 @@
     app:cardCornerRadius="6dp">
 
     <RelativeLayout
-        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:orientation="vertical">
 
         <TextView
@@ -17,6 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:fontFamily="@font/text_all"
             android:text="Evil Comment"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -37,9 +38,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/text_all"
                     android:gravity="center"
                     android:text="@string/safe"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    android:textSize="16sp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -48,9 +51,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/btnAgree"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/text_all"
             android:text="Не показывать больше"
             android:textColor="@color/white"
+            android:textSize="16sp"
             app:buttonTint="@color/white" />
 
         <Button
@@ -60,9 +66,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_margin="8dp"
+            android:fontFamily="@font/text_all"
             android:text="Понятно"
-            android:textColor="@color/colorAccent" />
-
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

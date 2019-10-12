@@ -32,6 +32,9 @@
             android:id="@+id/tvText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/text_all"
             android:gravity="center_horizontal"
             android:text="@string/please_wait" />
 
@@ -42,18 +45,20 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:progressDrawable="@drawable/gradient"
             android:indeterminate="false"
             android:max="10000"
-            android:progress="0" />
+            android:progress="0"
+            android:progressDrawable="@drawable/gradient" />
 
         <Button
             android:id="@+id/btnStartGame"
             style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
-            android:textSize="26sp"
             android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:fontFamily="@font/text_all"
             android:text="Начать игру!"
+            android:textSize="26sp"
             android:visibility="gone" />
     </LinearLayout>
 
@@ -75,6 +80,7 @@
             android:id="@+id/tvCheckNetwork"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/text_all"
             android:gravity="center_horizontal"
             android:text="@string/please_check_internet" />
     </LinearLayout>
