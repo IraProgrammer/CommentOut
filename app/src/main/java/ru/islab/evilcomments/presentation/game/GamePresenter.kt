@@ -60,7 +60,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         enableButtonWithDelay()
     }
 
-    private  fun enableButtonWithDelay(){
+    private fun enableButtonWithDelay() {
         Handler().postDelayed({
             canEnable = true
         }, delayMillis)
@@ -218,4 +218,6 @@ class GamePresenter : MvpPresenter<GameView>() {
         }
         enableButtonWithDelay()
     }
+
+    fun getRound() = round
 }

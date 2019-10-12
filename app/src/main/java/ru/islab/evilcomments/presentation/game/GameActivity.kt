@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.dialog_new_game.*
@@ -37,12 +38,18 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @Inject
     lateinit var prefs: AppPreferences
 
+    private lateinit var mInterstitialAd: InterstitialAd
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
         setContentView(R.layout.activity_game)
 
         MobileAds.initialize(this)
+
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
 
@@ -68,6 +75,12 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         gamePresenter.switchAction(GamePresenter.Action.COMMENT)
 
         btnRefresh.setOnClickListener { v ->
+            if (gamePresenter.getRound() == 2) {
+                mInterstitialAd.loadAd(AdRequest.Builder().build())
+            }
+            if (gamePresenter.getRound() == 3 && mInterstitialAd.isLoaded) {
+                mInterstitialAd.show()
+            }
             gamePresenter.nextStep(if (btnComment.isSelected) GamePresenter.Action.COMMENT else GamePresenter.Action.PUNISHMENT)
         }
 
