@@ -56,7 +56,7 @@
 
         <ImageView
             android:id="@+id/ivCircle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_above="@+id/tvUsername"
             android:layout_below="@+id/rlTopPanel"
@@ -73,6 +73,7 @@
             android:layout_alignEnd="@+id/ivCircle"
             android:layout_alignBottom="@+id/ivCircle"
             android:layout_margin="@dimen/avatar_margin"
+            android:adjustViewBounds="true"
             android:src="@drawable/ic_user" />
 
         <TextView

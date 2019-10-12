@@ -40,6 +40,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     private lateinit var mInterstitialAd: InterstitialAd
 
+    var toast: Toast? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
@@ -79,7 +81,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 mInterstitialAd.loadAd(AdRequest.Builder().build())
             }
             if (gamePresenter.getRound() == 3 && mInterstitialAd.isLoaded) {
-                mInterstitialAd.show()
+                //mInterstitialAd.show()
             }
             gamePresenter.nextStep(if (btnComment.isSelected) GamePresenter.Action.COMMENT else GamePresenter.Action.PUNISHMENT)
         }
@@ -96,11 +98,13 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     override fun showToast() {
-        Toast.makeText(
+        toast?.cancel()
+        toast = Toast.makeText(
             this,
             "Нет-нет, не так быстро! Сначала выполни одно из заданий",
             Toast.LENGTH_SHORT
-        ).show()
+        )
+        toast?.show()
     }
 
     override fun showGameOverDialog() {
@@ -121,7 +125,13 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         dialog.window?.setBackgroundDrawableResource(R.color.transparent)
         dialog.show()
 
-        tv.text = "Вы набрали ${tvPoints.text} баллов за игру! Хотите начать новую игру или выйти?"
+        var pointsText = "баллов"
+
+        if (tvPoints.text.toString().toInt() == 1) pointsText = "балл"
+        else if (tvPoints.text.toString().toInt() in 2..4) pointsText = "балла"
+
+        tv.text =
+            "Вы набрали ${tvPoints.text} $pointsText за игру! Хотите начать новую игру или выйти?"
 
         btnNewGame.setOnClickListener { v ->
             dialog.dismiss()

@@ -49,6 +49,8 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var compositeDisposable = CompositeDisposable()
 
+    private var hasCallbacks = false
+
     enum class Action { COMMENT, PUNISHMENT }
 
     init {
@@ -61,8 +63,10 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     private fun enableButtonWithDelay() {
+        hasCallbacks = true
         Handler().postDelayed({
             canEnable = true
+            hasCallbacks = false
         }, delayMillis)
     }
 
@@ -128,13 +132,16 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     fun restoreGame() {
+        points = prefs.getString(AppPreferences.POINTS).toInt()
+        round = prefs.getString(AppPreferences.ROUND).toInt()
+
         oneModel.comment = prefs.getString(AppPreferences.COMMENT)
         oneModel.punishment = prefs.getString(AppPreferences.PUNISHMENT)
         oneModel.username = prefs.getString(AppPreferences.USER_IN_CIRCLE)
         oneModel.profilePictureUrl = prefs.getString(AppPreferences.PHOTO)
 
-        viewState.onSetRound(prefs.getString(AppPreferences.ROUND).toInt())
-        viewState.onSetPoints(prefs.getString(AppPreferences.POINTS).toInt())
+        viewState.onSetRound(round)
+        viewState.onSetPoints(points)
 
         viewState.onStateRestored(oneModel)
     }
@@ -216,7 +223,9 @@ class GamePresenter : MvpPresenter<GameView>() {
         } else {
             viewState.showToast()
         }
-        enableButtonWithDelay()
+        if (!hasCallbacks) {
+            enableButtonWithDelay()
+        }
     }
 
     fun getRound() = round
