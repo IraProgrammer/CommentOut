@@ -56,7 +56,7 @@
 
         <ImageView
             android:id="@+id/ivCircle"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/tvUsername"
             android:layout_below="@+id/rlTopPanel"
@@ -66,8 +66,8 @@
 
         <ImageView
             android:id="@+id/ivAvatar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_alignStart="@+id/ivCircle"
             android:layout_alignTop="@+id/ivCircle"
             android:layout_alignEnd="@+id/ivCircle"

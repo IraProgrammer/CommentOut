@@ -81,7 +81,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 mInterstitialAd.loadAd(AdRequest.Builder().build())
             }
             if (gamePresenter.getRound() == 3 && mInterstitialAd.isLoaded) {
-                //mInterstitialAd.show()
+                mInterstitialAd.show()
             }
             gamePresenter.nextStep(if (btnComment.isSelected) GamePresenter.Action.COMMENT else GamePresenter.Action.PUNISHMENT)
         }
