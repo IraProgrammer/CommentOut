@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:shape="ring"
+            android:thickness="5dp"
+            android:useLevel="false">
+
+            <padding
+                android:bottom="8dp"
+                android:left="8dp"
+                android:right="8dp"
+                android:top="8dp" />
+
+            <solid android:color="#23FFFFFF"></solid>
+<!--            <size-->
+<!--                android:width="200dp"-->
+<!--                android:height="200dp"></size>-->
+        </shape>
+    </item>
+    <item>
+        <shape
+            android:shape="ring"
+            android:thickness="3dp"
+            android:useLevel="false">
+
+            <padding
+                android:bottom="40dp"
+                android:left="40dp"
+                android:right="40dp"
+                android:top="40dp" />
+
+            <solid android:color="#58FFFFFF"></solid>
+
+<!--            <size-->
+<!--                android:width="270dp"-->
+<!--                android:height="270dp"></size>-->
+        </shape>
+    </item>
+</layer-list>

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -105,6 +106,12 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             Toast.LENGTH_SHORT
         )
         toast?.show()
+
+        var c = f.measuredHeight
+        var v = f.height
+
+        ivAvatar.layoutParams = RelativeLayout.LayoutParams(c / 2, c / 2)
+        var c2 = 8
     }
 
     override fun showGameOverDialog() {

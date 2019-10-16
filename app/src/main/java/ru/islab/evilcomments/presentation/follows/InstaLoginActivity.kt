@@ -6,6 +6,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -252,6 +253,16 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
         wvInsta.webViewClient = object : WebViewClient() {
 
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                if (url.equals("https://www.instagram.com/" + prefs.getString(AppPreferences.USER_NAME) + "/")) {
+                    if (!isLoadingShownNow) {
+                        onShowLoading()
+                        isLoadingShownNow = true
+                    }
+                }
+            }
+
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 when {
@@ -264,10 +275,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                         clickFollowers()
                     }
                     url.equals("https://www.instagram.com/") -> {
-                        if (!isLoadingShownNow) {
-                            onShowLoading()
-                            isLoadingShownNow = true
-                        }
                         wvInsta.evaluateJavascript(
                             "(function(){return window.document.body.outerHTML})();",
                             object : ValueCallback<String> {
@@ -278,6 +285,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                                     for (i in a.indices) {
                                         if (a[i].equals("username")) {
+                                            if (!isLoadingShownNow) {
+                                                onShowLoading()
+                                                isLoadingShownNow = true
+                                            }
                                             prefs.putString(AppPreferences.USER_NAME, a[i + 2])
                                             wvInsta.loadUrl("https://www.instagram.com/" + a[i + 2])
                                             break

@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/f"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -55,32 +56,22 @@
         </RelativeLayout>
 
         <ImageView
-            android:id="@+id/ivCircle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/ivAvatar"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
             android:layout_above="@+id/tvUsername"
             android:layout_below="@+id/rlTopPanel"
+            android:src="@drawable/ic_user"
             android:layout_centerHorizontal="true"
             android:adjustViewBounds="true"
-            android:src="@drawable/ic_circle" />
-
-        <ImageView
-            android:id="@+id/ivAvatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignStart="@+id/ivCircle"
-            android:layout_alignTop="@+id/ivCircle"
-            android:layout_alignEnd="@+id/ivCircle"
-            android:layout_alignBottom="@+id/ivCircle"
-            android:layout_margin="@dimen/avatar_margin"
-            android:adjustViewBounds="true"
-            android:src="@drawable/ic_user" />
+            android:background="@drawable/border" />
 
         <TextView
             android:id="@+id/tvUsername"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/llButtons"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:fontFamily="@font/text_all"
             android:gravity="center"
