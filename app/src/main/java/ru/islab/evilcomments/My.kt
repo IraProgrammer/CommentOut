@@ -6,6 +6,10 @@ import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.widget.ImageView
 import androidx.core.graphics.get
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+import android.graphics.Bitmap
+
 
 class CircleImageView : ImageView {
 
@@ -42,6 +46,35 @@ class CircleImageView : ImageView {
     }
 
     private fun drawRoundImage(canvas: Canvas) {
+//        var b: Bitmap = (drawable as BitmapDrawable).bitmap
+//        val bitmap = b.copy(Bitmap.Config.ARGB_8888, true)
+//
+//        val dstBitmap = Bitmap.createBitmap(
+//            (bitmap.getWidth() + borderWidth * 2).toInt(), // Width
+//            (bitmap.getHeight() + borderWidth * 2).toInt(), // Height
+//            Bitmap.Config.ARGB_8888 // Config
+//        )
+//
+//        val scaledBitmap = Bitmap.createScaledBitmap(
+//            bitmap,
+//            (bitmap.getWidth() + borderWidth * 2).toInt(), // Width
+//            (bitmap.getHeight() + borderWidth * 2).toInt(), true
+//        )
+//
+//        val canvas = Canvas()
+//
+//        // Initialize a new Paint instance to draw border
+//        val paint = Paint()
+//        paint.color = borderColor
+//        paint.style = Paint.Style.STROKE
+//        paint.strokeWidth = borderWidth
+//        paint.isAntiAlias = true
+//
+//        canvas.drawBitmap(bitmap, borderWidth, borderWidth, null)
+//        canvas.drawBitmap(bitmap, 50f, 50f, null)
+//        canvas.drawBitmap(dstBitmap, 50f, 50f, null)
+//        canvas.drawBitmap(scaledBitmap, 50f, 50f, null)
+
         var b: Bitmap = (drawable as BitmapDrawable).bitmap
         val bitmap = b.copy(Bitmap.Config.ARGB_8888, true)
 
@@ -49,34 +82,19 @@ class CircleImageView : ImageView {
         val scaledBitmap: Bitmap
         val ratio: Float = bitmap.width.toFloat() / bitmap.height.toFloat()
         val height: Int = Math.round(width / ratio)
-
-        val matrix = Matrix()
-        matrix.postScale(0.4f, 0.4f)
-
-        scaledBitmap =
-                //Bitmap.createScaledBitmap(bitmap, (width * 0.7).toInt(), (height * 0.7).toInt(), true)
-
-            Bitmap.createBitmap(
-                bitmap,
-                2,
-                2,
-                (width * 1.8).toInt(),
-                (height * 1.8).toInt(),
-                matrix,
-                true
-            )
+        scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, false)
 
         /* Cutting the outer of the circle */
         val shader: Shader
         shader = BitmapShader(scaledBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
 
-        val rect = RectF(20f, 20f, width.toFloat() * 0.7f + 20f, height.toFloat() * 0.7f + 20f)
+        val rect = RectF()
+        rect.set(0f, 0f, width.toFloat(), height.toFloat())
 
         val imagePaint = Paint()
         imagePaint.isAntiAlias = true
         imagePaint.shader = shader
         canvas.drawRoundRect(rect, width.toFloat(), height.toFloat(), imagePaint)
-        //canvas.drawBitmap(scaledBitmap, 50f, 50f, null);
     }
 
 }
