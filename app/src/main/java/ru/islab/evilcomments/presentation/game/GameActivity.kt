@@ -3,6 +3,7 @@ package ru.islab.evilcomments.presentation.game
 import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -236,6 +237,14 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             .placeholder(R.drawable.ic_user)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(ivAvatar)
+
+        Glide.with(this)
+            .asDrawable()
+            .load(url)
+           // .apply(RequestOptions.circleCropTransform())
+            .placeholder(R.drawable.ic_user)
+          //  .transition(DrawableTransitionOptions.withCrossFade())
+            .into(ivGt)
     }
 
     private fun showRulesDialog() {
