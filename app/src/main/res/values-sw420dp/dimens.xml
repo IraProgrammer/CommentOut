@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="avatar_margin">26dp</dimen>
+
+    <dimen name="circle_inner">6dp</dimen>
+    <dimen name="circle_outer">9dp</dimen>
 </resources>
