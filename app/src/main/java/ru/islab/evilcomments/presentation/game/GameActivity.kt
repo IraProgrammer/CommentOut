@@ -2,19 +2,27 @@ package ru.islab.evilcomments.presentation.game
 
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Typeface
+import android.graphics.*
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
+import android.util.Log
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
@@ -29,6 +37,7 @@ import ru.islab.evilcomments.di.module.GameModule
 import ru.islab.evilcomments.domain.Punishment
 import ru.islab.evilcomments.presentation.OneModel
 import javax.inject.Inject
+import javax.sql.DataSource
 
 
 class GameActivity : MvpAppCompatActivity(), GameView {
@@ -62,7 +71,17 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         }
 
         ivHelp.setOnClickListener { v ->
-            showRulesDialog()
+            //showRulesDialog()
+
+            var m = windowManager.defaultDisplay;
+            var size = Point()
+            m.getSize(size)
+            var v = size.x;
+            var a = ivCircle.height
+
+            ivAvatar.layoutParams.height = a - 100
+            ivAvatar.layoutParams.width = a - 100
+            var r = 0;
         }
 
         ivNewGame.setOnClickListener { v ->
@@ -106,12 +125,6 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             Toast.LENGTH_SHORT
         )
         toast?.show()
-
-        var c = f.measuredHeight
-        var v = f.height
-
-        ivAvatar.layoutParams = RelativeLayout.LayoutParams(c / 2, c / 2)
-        var c2 = 8
     }
 
     override fun showGameOverDialog() {
@@ -216,7 +229,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     private fun loadPicture(url: String) {
-        Glide.with(baseContext)
+
+        Glide.with(this)
             .load(url)
             .apply(RequestOptions.circleCropTransform())
             .placeholder(R.drawable.ic_user)
