@@ -2,6 +2,6 @@
 <resources>
     <dimen name="avatar_margin">44dp</dimen>
 
-    <dimen name="circle_inner">8dp</dimen>
-    <dimen name="circle_outer">12dp</dimen>
+    <dimen name="circle_inner">6dp</dimen>
+    <dimen name="circle_outer">6dp</dimen>
 </resources>

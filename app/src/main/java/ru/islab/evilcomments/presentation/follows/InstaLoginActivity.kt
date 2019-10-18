@@ -76,13 +76,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                 startActivity(intent)
                 finish()
             }
-
             initUI()
         }
 
         anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
-
-        //instaLoginPresenter.checkNetwork()
 
         instaLoginPresenter.observeNetwork(baseContext)
     }
@@ -161,7 +158,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         val btn = l.findViewById<Button>(ru.islab.evilcomments.R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l, 0, 48, 0, 48)
+            .setView(l,0,0,0,0)
             .setCancelable(false)
             .create()
 
@@ -297,11 +294,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                 }
                             })
                     }
-//                    url.contains("?error") -> {
-//                        wvInsta.loadUrl(
-//                            "https://www.instagram.com/accounts/login"
-//                        )
-//                    }
                 }
             }
         }

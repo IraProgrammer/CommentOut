@@ -54,51 +54,26 @@
 
         </RelativeLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/tvUsername"
-            android:layout_below="@+id/rlTopPanel">
+            android:layout_below="@+id/rlTopPanel"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_horizontal">
 
-            <ImageView
-                android:id="@+id/ivCircle"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_centerHorizontal="true"
-                android:adjustViewBounds="true"
-                android:src="@drawable/ic_circle"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <ImageView
+            <ru.islab.evilcomments.presentation.custom.CircleImageView
                 android:id="@+id/ivAvatar"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_margin="25dp"
                 android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_user"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/ivCircle"
-                app:layout_constraintEnd_toEndOf="@+id/ivCircle"
-                app:layout_constraintStart_toStartOf="@+id/ivCircle"
-                app:layout_constraintTop_toTopOf="@+id/ivCircle" />
-
-            <ru.islab.evilcomments.CircleImageView
-                android:id="@+id/ivGt"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="centerInside"
-                android:src="@drawable/images"
-                app:border_width1="4dp"
-                app:border_width2="6dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                app:border_color1="#33FFFFFF"
+                app:border_color2="#80FFFFFF"
+                app:border_width1="@dimen/circle_inner"
+                app:border_width2="@dimen/circle_outer" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvUsername"

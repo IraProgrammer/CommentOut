@@ -1,16 +1,13 @@
-package ru.islab.evilcomments
+package ru.islab.evilcomments.presentation.custom
 
 import android.content.Context
-import android.content.res.TypedArray
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
 import android.widget.ImageView
-import androidx.core.graphics.get
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
 import android.graphics.Bitmap
 import androidx.core.graphics.drawable.toBitmap
+import ru.islab.evilcomments.R
+import kotlin.math.roundToInt
 
 
 class CircleImageView : ImageView {
@@ -43,15 +40,23 @@ class CircleImageView : ImageView {
 
         if (set == null) return
 
-        var ta = context.obtainStyledAttributes(set, R.styleable.MyCustomView)
-        borderColor = ta.getColor(R.styleable.MyCustomView_border_color1, resources.getColor(R.color.transparent1))
-        borderColor2 = ta.getColor(R.styleable.MyCustomView_border_color2, resources.getColor(R.color.transparent2))
+        val ta = context.obtainStyledAttributes(set, R.styleable.MyCustomView)
+        borderColor = ta.getColor(
+            R.styleable.MyCustomView_border_color1, resources.getColor(
+                R.color.transparent1
+            )
+        )
+        borderColor2 = ta.getColor(
+            R.styleable.MyCustomView_border_color2, resources.getColor(
+                R.color.transparent2
+            )
+        )
 
         borderWidth = ta.getDimension(R.styleable.MyCustomView_border_width1, 4f)
         borderWidth2 = ta.getDimension(R.styleable.MyCustomView_border_width2, 6f)
 
-        p1.setColor(borderColor2)
-        p2.setColor(borderColor)
+        p1.color = borderColor2
+        p2.color = borderColor
 
         p1.strokeWidth = borderWidth
         p2.strokeWidth = borderWidth2
@@ -76,17 +81,17 @@ class CircleImageView : ImageView {
 
     private fun drawRoundImage(canvas: Canvas) {
 
-        var b: Bitmap = drawable.toBitmap()
+        val b: Bitmap = drawable.toBitmap()
         val bitmap = b.copy(Bitmap.Config.ARGB_8888, true)
 
         val scaledBitmap: Bitmap
         val ratio: Float = bitmap.width.toFloat() / bitmap.height.toFloat()
-        val height: Int = Math.round(width / ratio)
+        val height: Int = (width / ratio).roundToInt()
 
         scaledBitmap = Bitmap.createScaledBitmap(
             bitmap,
-            (width).toInt(),
-            (height).toInt(),
+            width,
+            height,
             true
         )
 
@@ -96,7 +101,12 @@ class CircleImageView : ImageView {
         val imagePaint = Paint()
         imagePaint.isAntiAlias = true
         imagePaint.shader = shader
-        canvas.drawCircle(width / 2f, width / 2f, width / 2f - borderWidth2 * 3, imagePaint)
+        canvas.drawCircle(
+            width / 2f,
+            width / 2f,
+            width / 2f - borderWidth * 2 - borderWidth2 * 3,
+            imagePaint
+        )
     }
 
 }

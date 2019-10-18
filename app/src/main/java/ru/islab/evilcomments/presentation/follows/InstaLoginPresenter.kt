@@ -41,20 +41,6 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
         )
     }
 
-    fun checkNetwork() {
-        compositeDisposable.add(
-            ReactiveNetwork
-                .checkInternetConnectivity()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe { conn ->
-                    if (!conn) {
-                        viewState.noNetworkInStart()
-                    }
-                }
-        )
-    }
-
     fun observeNetwork(context: Context) {
         compositeDisposable.add(
             ReactiveNetwork

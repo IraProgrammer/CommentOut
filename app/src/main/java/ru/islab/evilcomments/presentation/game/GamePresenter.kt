@@ -51,6 +51,10 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var hasCallbacks = false
 
+    private val handler = Handler()
+
+    private var runnable = Runnable { }
+
     enum class Action { COMMENT, PUNISHMENT }
 
     init {
@@ -64,10 +68,11 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private fun enableButtonWithDelay() {
         hasCallbacks = true
-        Handler().postDelayed({
+        runnable = Runnable {
             canEnable = true
             hasCallbacks = false
-        }, delayMillis)
+        }
+        handler.postDelayed(runnable, delayMillis)
     }
 
     fun getRandomUser() {
@@ -196,6 +201,9 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     fun startNewGame() {
+        handler.removeCallbacks(runnable)
+        enableButtonWithDelay()
+
         prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
 
         isGameOver = false

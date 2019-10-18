@@ -72,17 +72,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         }
 
         ivHelp.setOnClickListener { v ->
-            //showRulesDialog()
-
-            var m = windowManager.defaultDisplay;
-            var size = Point()
-            m.getSize(size)
-            var v = size.x;
-            var a = ivCircle.height
-
-            ivAvatar.layoutParams.height = a - 100
-            ivAvatar.layoutParams.width = a - 100
-            var r = 0;
+            showRulesDialog()
         }
 
         ivNewGame.setOnClickListener { v ->
@@ -230,21 +220,12 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     private fun loadPicture(url: String) {
-
-        Glide.with(this)
-            .load(url)
-            .apply(RequestOptions.circleCropTransform())
-            .placeholder(R.drawable.ic_user)
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(ivAvatar)
-
         Glide.with(this)
             .asDrawable()
             .load(url)
-           // .apply(RequestOptions.circleCropTransform())
             .placeholder(R.drawable.ic_user)
-          //  .transition(DrawableTransitionOptions.withCrossFade())
-            .into(ivGt)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(ivAvatar)
     }
 
     private fun showRulesDialog() {
@@ -256,7 +237,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         val btn = l.findViewById<Button>(R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l, 0, 48, 0, 48)
+            .setView(l)
             .create()
 
         dialog.window?.setBackgroundDrawableResource(R.color.transparent)
