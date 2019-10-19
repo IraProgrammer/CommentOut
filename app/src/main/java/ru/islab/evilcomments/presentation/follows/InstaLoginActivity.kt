@@ -189,7 +189,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         progressAnimator?.addListener(onEnd = {
             if (!wvInsta.url.contains("/following/")) {
                 showAuthorizationScreen(
-                    "Произошла ошибка при импорте подписок. Пожалуйста, попробуйте снова.",
+                    "Произошла ошибка при импорте подписок. Пожалуйста, проверьте интернет-соединение попробуйте снова.",
                     "ОК"
                 )
             }
@@ -352,7 +352,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                         } else {
                             progressAnimator?.removeAllListeners()
                             tvText.text =
-                                "К сожалению, мы не смогли найти подписки на Вашем аккаунте. Для продолжения игры необходимо наличие подписок."
+                                "Произошла ошибка при импорте подписок. Пожалуйста, убедитесь в наличии подписок на Вашем аккаунте и проверьте интернет-соединение."
                             btnStartGame.text = "ПОНЯТНО"
                             btnStartGame.visibility = View.VISIBLE
                             btnStartGame.startAnimation(anim)
