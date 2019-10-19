@@ -15,6 +15,7 @@
 
         <RelativeLayout
             android:id="@+id/rlTopPanel"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_panel"
             android:layout_alignParentTop="true">

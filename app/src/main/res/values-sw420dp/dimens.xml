@@ -14,8 +14,8 @@
     <dimen name="avatar_margin_top">12dp</dimen>
     <dimen name="avatar_margin_bottom">12dp</dimen>
     <dimen name="username">18sp</dimen>
-    <dimen name="top_panel">60dp</dimen>
-    <dimen name="ll_username_heidht">64dp</dimen>
+    <dimen name="top_panel">52dp</dimen>
+    <dimen name="ll_username_heidht">48dp</dimen>
     <dimen name="button_icon">40dp</dimen>
     <dimen name="margin_icon">8dp</dimen>
     <dimen name="round_width">90dp</dimen>

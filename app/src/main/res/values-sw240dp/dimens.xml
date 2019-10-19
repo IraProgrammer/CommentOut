@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="avatar_margin">30dp</dimen>
+    <dimen name="avatar_margin">20dp</dimen>
 
-    <dimen name="circle_inner">4dp</dimen>
-    <dimen name="circle_outer">4dp</dimen>
+    <dimen name="circle_inner">2dp</dimen>
+    <dimen name="circle_outer">2dp</dimen>
 
     <dimen name="pink_button">16sp</dimen>
     <dimen name="dialog_title">18sp</dimen>
@@ -11,11 +11,11 @@
     <dimen name="dialog_text">16sp</dimen>
 
     <dimen name="todo_text">16sp</dimen>
-    <dimen name="avatar_margin_top">16dp</dimen>
-    <dimen name="avatar_margin_bottom">16dp</dimen>
-    <dimen name="username">18sp</dimen>
-    <dimen name="top_panel">52dp</dimen>
-    <dimen name="ll_username_heidht">48dp</dimen>
+    <dimen name="avatar_margin_top">10dp</dimen>
+    <dimen name="avatar_margin_bottom">10dp</dimen>
+    <dimen name="username">16sp</dimen>
+    <dimen name="top_panel">50dp</dimen>
+    <dimen name="ll_username_heidht">42dp</dimen>
     <dimen name="button_icon">40dp</dimen>
     <dimen name="margin_icon">8dp</dimen>
     <dimen name="round_width">90dp</dimen>

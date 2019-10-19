@@ -112,7 +112,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         toast?.cancel()
         toast = Toast.makeText(
             this,
-            "Нет-нет, не так быстро! Сначала выполни одно из заданий",
+            "Нет-нет, не так быстро!\nСначала выполни одно из заданий",
             Toast.LENGTH_SHORT
         )
         toast?.show()
