@@ -158,7 +158,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         val btn = l.findViewById<Button>(ru.islab.evilcomments.R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l,0,0,0,0)
+            .setView(l)
             .setCancelable(false)
             .create()
 
