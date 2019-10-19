@@ -202,6 +202,7 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     fun startNewGame() {
         handler.removeCallbacks(runnable)
+        canEnable = false
         enableButtonWithDelay()
 
         prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
