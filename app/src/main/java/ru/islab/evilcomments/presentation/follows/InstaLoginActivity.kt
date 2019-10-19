@@ -180,6 +180,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         llProgress.visibility = View.VISIBLE
         pbHorizontal.visibility = View.VISIBLE
 
+        btnStartGame.visibility = View.GONE
+
         tvText.text = getString(R.string.please_wait)
 
         wvInsta.layoutParams = ConstraintLayout.LayoutParams(300, 500)
@@ -189,7 +191,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             if (!wvInsta.url.contains("/following/")) {
                 showAuthorizationScreen(
                     "Произошла ошибка при импорте подписок. Пожалуйста, попробуйте ещё раз.",
-                    "ЕЩЁ РАЗ"
+                    "ОК"
                 )
             }
         })
@@ -199,24 +201,26 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun showAuthorizationScreen(text: String, buttonText: String) {
-        isLoadingShownNow = false
-        wvInsta.layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.MATCH_PARENT,
-            ConstraintLayout.LayoutParams.MATCH_PARENT
-        )
-        wvInsta.loadUrl(
-            "https://www.instagram.com/accounts/login"
-        )
+        wvInsta.stopLoading()
+        //isLoadingShownNow = false
+//        wvInsta.layoutParams = ConstraintLayout.LayoutParams(
+//            ConstraintLayout.LayoutParams.MATCH_PARENT,
+//            ConstraintLayout.LayoutParams.MATCH_PARENT
+//        )
+//        wvInsta.loadUrl(
+//            "https://www.instagram.com/accounts/login"
+//        )
         pbHorizontal.visibility = View.GONE
         tvText.text = text
         btnStartGame.visibility = View.VISIBLE
         btnStartGame.startAnimation(anim)
         btnStartGame.text = buttonText
         btnStartGame.setOnClickListener {
-            pbHorizontal.visibility = View.GONE
-            btnStartGame.visibility = View.GONE
-            btnStartGame.clearAnimation()
-            llProgress.visibility = View.GONE
+            //            pbHorizontal.visibility = View.GONE
+//            btnStartGame.visibility = View.GONE
+//            btnStartGame.clearAnimation()
+//            llProgress.visibility = View.GONE
+            finish()
         }
     }
 
