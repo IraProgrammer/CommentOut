@@ -12,10 +12,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.animation.*
-import android.webkit.ValueCallback
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -93,15 +90,15 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun networkFailed() {
-        parsingHandler.removeCallbacks(parsingRunnable)
-        if (llProgress.isVisible) {
-            wvInsta.stopLoading()
-            tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
-            progressAnimator?.pause()
-            pbHorizontal.visibility = View.GONE
-        } else {
-            llNoNetwork.visibility = View.VISIBLE
-        }
+//        parsingHandler.removeCallbacks(parsingRunnable)
+//        if (llProgress.isVisible) {
+//            wvInsta.stopLoading()
+//            tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
+//            progressAnimator?.pause()
+//            pbHorizontal.visibility = View.GONE
+//        } else {
+//            llNoNetwork.visibility = View.VISIBLE
+//        }
     }
 
     override fun networkSuccessed() {
@@ -110,7 +107,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             llNoNetwork.visibility = View.GONE
             tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
             progressAnimator?.start()
-            wvInsta.reload()
+            //wvInsta.reload()
         }
     }
 
@@ -242,7 +239,27 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             "https://www.instagram.com/accounts/login"
         )
 
+        //wvInsta.webChromeClient = object : WebChromeClient(){on}
+
         wvInsta.webViewClient = object : WebViewClient() {
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                parsingHandler.removeCallbacks(parsingRunnable)
+                if (llProgress.isVisible) {
+                    //wvInsta.stopLoading()
+                    tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
+                    progressAnimator?.pause()
+                    pbHorizontal.visibility = View.GONE
+                }
+//                else {
+//                    llNoNetwork.visibility = View.VISIBLE
+//                }
+                    //super.onReceivedError(view, request, error)
+            }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
