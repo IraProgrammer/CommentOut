@@ -102,6 +102,9 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun networkSuccessed() {
+        if (!wvInsta.url.equals("https://www.instagram.com/accounts/login/")) {
+            wvInsta.reload()
+        }
         if (btnStartGame.visibility == View.GONE) {
             pbHorizontal.visibility = View.VISIBLE
             llNoNetwork.visibility = View.GONE
@@ -258,7 +261,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 //                else {
 //                    llNoNetwork.visibility = View.VISIBLE
 //                }
-                    //super.onReceivedError(view, request, error)
+                //super.onReceivedError(view, request, error)
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
