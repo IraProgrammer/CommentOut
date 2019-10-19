@@ -95,21 +95,23 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     override fun networkFailed() {
         parsingHandler.removeCallbacks(parsingRunnable)
         if (llProgress.isVisible) {
+            wvInsta.stopLoading()
             tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
             progressAnimator?.pause()
             pbHorizontal.visibility = View.GONE
-            wvInsta.stopLoading()
         } else {
             llNoNetwork.visibility = View.VISIBLE
         }
     }
 
     override fun networkSuccessed() {
-        pbHorizontal.visibility = View.VISIBLE
-        llNoNetwork.visibility = View.GONE
-        tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
-        progressAnimator?.start()
-        wvInsta.reload()
+        if (btnStartGame.visibility == View.GONE) {
+            pbHorizontal.visibility = View.VISIBLE
+            llNoNetwork.visibility = View.GONE
+            tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
+            progressAnimator?.start()
+            wvInsta.reload()
+        }
     }
 
     override fun initUI() {
@@ -190,7 +192,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         progressAnimator?.addListener(onEnd = {
             if (!wvInsta.url.contains("/following/")) {
                 showAuthorizationScreen(
-                    "Произошла ошибка при импорте подписок. Пожалуйста, попробуйте ещё раз.",
+                    "Произошла ошибка при импорте подписок. Пожалуйста, попробуйте снова.",
                     "ОК"
                 )
             }
@@ -202,24 +204,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     private fun showAuthorizationScreen(text: String, buttonText: String) {
         wvInsta.stopLoading()
-        //isLoadingShownNow = false
-//        wvInsta.layoutParams = ConstraintLayout.LayoutParams(
-//            ConstraintLayout.LayoutParams.MATCH_PARENT,
-//            ConstraintLayout.LayoutParams.MATCH_PARENT
-//        )
-//        wvInsta.loadUrl(
-//            "https://www.instagram.com/accounts/login"
-//        )
         pbHorizontal.visibility = View.GONE
         tvText.text = text
         btnStartGame.visibility = View.VISIBLE
         btnStartGame.startAnimation(anim)
         btnStartGame.text = buttonText
         btnStartGame.setOnClickListener {
-            //            pbHorizontal.visibility = View.GONE
-//            btnStartGame.visibility = View.GONE
-//            btnStartGame.clearAnimation()
-//            llProgress.visibility = View.GONE
             finish()
         }
     }
@@ -345,7 +335,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                         } else {
                             progressAnimator?.removeAllListeners()
                             tvText.text =
-                                "К сожалению, Вы ни на кого не подписаны. Для продолжения игры необходимо наличие подписок на Вашем аккаунте."
+                                "К сожалению, мы не смогли найти подписки на Вашем аккаунте. Для продолжения игры необходимо наличие подписок."
                             btnStartGame.text = "ПОНЯТНО"
                             btnStartGame.visibility = View.VISIBLE
                             btnStartGame.startAnimation(anim)
