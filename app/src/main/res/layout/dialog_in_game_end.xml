@@ -28,7 +28,7 @@
                 android:layout_marginEnd="16dp"
                 android:fontFamily="@font/text_all"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="@dimen/dialog_text" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -43,7 +43,7 @@
                     android:fontFamily="@font/text_all"
                     android:text="ВЫХОД"
                     android:textColor="@color/colorAccent"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/pink_button"
                     android:textStyle="bold" />
 
                 <Button
@@ -55,7 +55,7 @@
                     android:fontFamily="@font/text_all"
                     android:text="НОВАЯ ИГРА"
                     android:textColor="@color/colorAccent"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/pink_button"
                     android:textStyle="bold" />
             </RelativeLayout>
         </LinearLayout>

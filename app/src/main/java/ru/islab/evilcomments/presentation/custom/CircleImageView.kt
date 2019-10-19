@@ -104,7 +104,7 @@ class CircleImageView : ImageView {
         canvas.drawCircle(
             width / 2f,
             width / 2f,
-            width / 2f - borderWidth * 2 - borderWidth2 * 3,
+            width / 2f - borderWidth * 4 - borderWidth2 / 2,
             imagePaint
         )
     }

@@ -29,7 +29,7 @@
                 android:fontFamily="@font/text_all"
                 android:text="Evil Comment"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/pink_button"
                 android:textStyle="bold" />
 
             <androidx.core.widget.NestedScrollView
@@ -51,7 +51,7 @@
                         android:gravity="center"
                         android:text="@string/safe"
                         android:textColor="@color/white"
-                        android:textSize="16sp" />
+                        android:textSize="@dimen/dialog_text" />
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
@@ -65,7 +65,7 @@
                 android:fontFamily="@font/text_all"
                 android:text="Не показывать больше"
                 android:textColor="@color/white"
-                android:textSize="18sp"
+                android:textSize="@dimen/dont_show_again"
                 app:buttonTint="@color/white" />
 
             <Button
@@ -78,7 +78,7 @@
                 android:fontFamily="@font/text_all"
                 android:text="Понятно"
                 android:textColor="@color/colorAccent"
-                android:textSize="18sp"
+                android:textSize="@dimen/pink_button"
                 android:textStyle="bold" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

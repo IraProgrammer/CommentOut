@@ -16,40 +16,41 @@
         <RelativeLayout
             android:id="@+id/rlTopPanel"
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="@dimen/top_panel"
             android:layout_alignParentTop="true">
 
             <Button
                 android:id="@+id/ivNewGame"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/button_icon"
+                android:layout_height="@dimen/button_icon"
                 android:layout_alignParentStart="true"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="8dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/margin_icon"
                 android:background="@drawable/ic_reload"
                 android:fontFamily="@font/text_signature" />
 
             <Button
                 android:id="@+id/tvRound"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="90dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/round_width"
+                android:layout_height="@dimen/button_icon"
                 android:layout_centerInParent="true"
                 android:background="@drawable/ic_oval_up"
                 android:fontFamily="@font/text_signature"
                 android:text="Раунд 1"
                 android:textColor="@color/white"
+                android:textSize="@dimen/todo_text_size"
                 android:textStyle="bold" />
 
             <Button
                 android:id="@+id/ivHelp"
                 style="@style/Widget.AppCompat.Button.Borderless"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="@dimen/button_icon"
+                android:layout_height="@dimen/button_icon"
                 android:layout_alignParentEnd="true"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="8dp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/margin_icon"
                 android:background="@drawable/ic_help" />
 
         </RelativeLayout>
@@ -57,9 +58,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/tvUsername"
+            android:layout_above="@+id/llUsername"
             android:layout_below="@+id/rlTopPanel"
-            android:layout_marginBottom="12dp"
+            android:layout_marginTop="@dimen/avatar_margin_top"
             android:gravity="center_horizontal">
 
             <ru.islab.evilcomments.presentation.custom.CircleImageView
@@ -75,17 +76,22 @@
                 app:border_width2="@dimen/circle_outer" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/tvUsername"
+        <LinearLayout
+            android:id="@+id/llUsername"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/ll_username_heidht"
             android:layout_above="@+id/llButtons"
-            android:layout_marginBottom="20dp"
-            android:fontFamily="@font/text_all"
-            android:gravity="center"
-            android:text="bvzdcdff"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvUsername"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/text_all"
+                android:text="bvzdcdff"
+                android:textColor="@color/white"
+                android:textSize="@dimen/username" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/llButtons"
@@ -104,6 +110,7 @@
                 android:fontFamily="@font/text_signature"
                 android:text="КОММЕНТ"
                 android:textColor="@color/white"
+                android:textSize="@dimen/todo_text_size"
                 android:textStyle="bold" />
 
             <Button
@@ -116,7 +123,7 @@
                 android:fontFamily="@font/text_signature"
                 android:text="0"
                 android:textColor="@color/white"
-                android:textSize="28sp"
+                android:textSize="@dimen/points_size"
                 android:textStyle="bold" />
 
             <Button
@@ -129,6 +136,7 @@
                 android:fontFamily="@font/text_signature"
                 android:text="НАКАЗАНИЕ"
                 android:textColor="@color/white"
+                android:textSize="@dimen/todo_text_size"
                 android:textStyle="bold" />
         </LinearLayout>
 
@@ -152,24 +160,25 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"
+                android:layout_margin="16dp"
                 android:fontFamily="@font/text_task"
                 android:gravity="center_horizontal"
                 android:textIsSelectable="true"
-                android:textSize="16sp"
+                android:textSize="@dimen/todo_text"
                 android:textStyle="italic" />
         </androidx.core.widget.NestedScrollView>
 
         <Button
             android:id="@+id/btnRefresh"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="@dimen/done_button"
             android:layout_above="@+id/adView"
             android:layout_centerHorizontal="true"
             android:background="@drawable/ic_buttondown"
             android:fontFamily="@font/text_signature"
             android:text="ВЫПОЛНЕНО"
             android:textColor="@color/white"
+            android:textSize="@dimen/todo_text_size"
             android:textStyle="bold" />
 
         <com.google.android.gms.ads.AdView
