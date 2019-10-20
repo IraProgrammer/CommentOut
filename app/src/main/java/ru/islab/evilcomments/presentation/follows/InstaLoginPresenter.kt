@@ -50,8 +50,6 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
                 .subscribe { connectivity ->
                     if (connectivity.isAvailable) {
                         viewState.networkSuccessed()
-                    } else {
-                        viewState.networkFailed()
                     }
                 })
     }

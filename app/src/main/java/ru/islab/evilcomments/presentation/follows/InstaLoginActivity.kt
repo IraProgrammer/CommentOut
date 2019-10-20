@@ -85,24 +85,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         prefs.putInt(VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
-    override fun noNetworkInStart() {
-        llNoNetwork.visibility = View.VISIBLE
-    }
-
-    override fun networkFailed() {
-//        parsingHandler.removeCallbacks(parsingRunnable)
-//        if (llProgress.isVisible) {
-//            wvInsta.stopLoading()
-//            tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
-//            progressAnimator?.pause()
-//            pbHorizontal.visibility = View.GONE
-//        } else {
-//            llNoNetwork.visibility = View.VISIBLE
-//        }
-    }
-
     override fun networkSuccessed() {
-        if (!wvInsta.url.equals("https://www.instagram.com/accounts/login/")) {
+        if (wvInsta.url != null && !wvInsta.url.equals("https://www.instagram.com/accounts/login/")) {
             wvInsta.reload()
         }
         if (btnStartGame.visibility == View.GONE) {
@@ -110,7 +94,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             llNoNetwork.visibility = View.GONE
             tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
             progressAnimator?.start()
-            //wvInsta.reload()
         }
     }
 
@@ -242,8 +225,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             "https://www.instagram.com/accounts/login"
         )
 
-        //wvInsta.webChromeClient = object : WebChromeClient(){on}
-
         wvInsta.webViewClient = object : WebViewClient() {
 
             override fun onReceivedError(
@@ -251,17 +232,13 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                 request: WebResourceRequest?,
                 error: WebResourceError?
             ) {
+                super.onReceivedError(view, request, error)
                 parsingHandler.removeCallbacks(parsingRunnable)
                 if (llProgress.isVisible) {
-                    //wvInsta.stopLoading()
                     tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
                     progressAnimator?.pause()
                     pbHorizontal.visibility = View.GONE
                 }
-//                else {
-//                    llNoNetwork.visibility = View.VISIBLE
-//                }
-                //super.onReceivedError(view, request, error)
             }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
