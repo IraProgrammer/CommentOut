@@ -61,7 +61,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         MobileAds.initialize(this)
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.adUnitId = "ca-app-pub-3446552315762824/4298236849"
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
