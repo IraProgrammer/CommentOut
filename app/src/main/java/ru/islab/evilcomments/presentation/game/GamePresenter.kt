@@ -37,7 +37,7 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var isGameOver = false
 
-    private var delayMillis: Long = 10000
+    private var delayMillis: Long = 5000
 
     private var points = 0
 

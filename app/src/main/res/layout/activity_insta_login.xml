@@ -23,7 +23,7 @@
         android:focusable="true"
         android:orientation="vertical"
         android:padding="12dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
