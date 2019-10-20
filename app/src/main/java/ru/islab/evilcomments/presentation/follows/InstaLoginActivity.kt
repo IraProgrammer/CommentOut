@@ -97,6 +97,18 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         }
     }
 
+    override fun networkFailed() {
+        parsingHandler.removeCallbacks(parsingRunnable)
+        if (llProgress.isVisible) {
+            tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
+            progressAnimator?.pause()
+            pbHorizontal.visibility = View.GONE
+        }
+//        else {
+//            llNoNetwork.visibility = View.VISIBLE
+//        }
+    }
+
     override fun initUI() {
         when {
             prefs.getBoolean(SHOW_ADULT) -> {
@@ -227,19 +239,19 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
         wvInsta.webViewClient = object : WebViewClient() {
 
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-                parsingHandler.removeCallbacks(parsingRunnable)
-                if (llProgress.isVisible) {
-                    tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
-                    progressAnimator?.pause()
-                    pbHorizontal.visibility = View.GONE
-                }
-            }
+//            override fun onReceivedError(
+//                view: WebView?,
+//                request: WebResourceRequest?,
+//                error: WebResourceError?
+//            ) {
+//                //super.onReceivedError(view, request, error)
+//                parsingHandler.removeCallbacks(parsingRunnable)
+//                if (llProgress.isVisible) {
+//                    tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
+//                    progressAnimator?.pause()
+//                    pbHorizontal.visibility = View.GONE
+//                }
+//            }
 
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)

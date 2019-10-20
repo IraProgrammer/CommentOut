@@ -50,6 +50,8 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
                 .subscribe { connectivity ->
                     if (connectivity.isAvailable) {
                         viewState.networkSuccessed()
+                    } else {
+                        viewState.networkFailed()
                     }
                 })
     }
@@ -62,7 +64,8 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     viewState.saveVersionCode()
-                    viewState.initUI() }, { throwable -> })
+                    viewState.initUI()
+                }, { throwable -> })
         )
     }
 

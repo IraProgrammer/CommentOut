@@ -8,6 +8,7 @@ import moxy.viewstate.strategy.StateStrategyType
 interface InstaLoginView: MvpView{
     fun startGame()
     fun networkSuccessed()
+    fun networkFailed()
     fun initUI()
     fun saveVersionCode()
 }
