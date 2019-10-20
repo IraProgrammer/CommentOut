@@ -29,6 +29,8 @@ import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.android.synthetic.main.activity_game.*
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.BuildConfig
@@ -110,6 +112,11 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun initUI() {
+
+        Glide.with(this)
+            .load(R.drawable.logo_gif)
+            .into(logoGif)
+
         when {
             prefs.getBoolean(SHOW_ADULT) -> {
                 val l = layoutInflater.inflate(
@@ -174,6 +181,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun onShowLoading() {
+
         llProgress.visibility = View.VISIBLE
         pbHorizontal.visibility = View.VISIBLE
 
