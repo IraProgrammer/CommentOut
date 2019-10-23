@@ -91,6 +91,7 @@ class GamePresenter : MvpPresenter<GameView>() {
                 .subscribe(
                     { oneModel ->
                         switchAction(Action.COMMENT)
+                        saveStateIfNeed()
                         viewState.onShowNextRound(oneModel)
                     },
                     { throwable ->
@@ -194,8 +195,8 @@ class GamePresenter : MvpPresenter<GameView>() {
             isGameOver = true
             viewState.showGameOverDialog()
         } else {
-            getRandomUser()
             round++
+            getRandomUser()
             viewState.onSetRound(round)
         }
     }

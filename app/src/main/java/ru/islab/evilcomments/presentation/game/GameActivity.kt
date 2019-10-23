@@ -247,7 +247,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     override fun onPause() {
-        gamePresenter.saveStateIfNeed()
+        //gamePresenter.saveStateIfNeed()
         super.onPause()
     }
 
