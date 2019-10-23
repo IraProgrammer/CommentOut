@@ -14,53 +14,72 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/llProgress"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@android:color/white"
         android:clickable="true"
         android:focusable="true"
-        android:gravity="center"
         android:orientation="vertical"
+        android:padding="12dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="0dp">
 
-        <TextView
-            android:id="@+id/tvText"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/llLoadViews"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/logoGif"
+                android:layout_width="140dp"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llLoadViews"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textSize="16sp"
-            android:fontFamily="@font/text_all"
-            android:gravity="center_horizontal"
-            android:text="@string/please_wait" />
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <ProgressBar
-            android:id="@+id/pbHorizontal"
-            style="@android:style/Widget.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:indeterminate="false"
-            android:max="10000"
-            android:progress="0"
-            android:progressDrawable="@drawable/gradient" />
+            <TextView
+                android:id="@+id/tvText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:fontFamily="@font/text_all"
+                android:gravity="center_horizontal"
+                android:text="@string/please_wait"
+                android:textSize="@dimen/dialog_text" />
 
-        <Button
-            android:id="@+id/btnStartGame"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:fontFamily="@font/text_all"
-            android:text="Начать игру!"
-            android:textSize="26sp"
-            android:visibility="gone" />
-    </LinearLayout>
+            <ProgressBar
+                android:id="@+id/pbHorizontal"
+                style="@android:style/Widget.ProgressBar.Horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:indeterminate="false"
+                android:max="10000"
+                android:progress="0"
+                android:progressDrawable="@drawable/gradient" />
+
+            <Button
+                android:id="@+id/btnStartGame"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/text_all"
+                android:text="Начать игру!"
+                android:textSize="@dimen/start_game_button"
+                android:textStyle="bold"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/llNoNetwork"
@@ -71,6 +90,7 @@
         android:focusable="true"
         android:gravity="center"
         android:orientation="vertical"
+        android:padding="12dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -82,7 +102,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/text_all"
             android:gravity="center_horizontal"
-            android:text="@string/please_check_internet" />
+            android:text="@string/please_check_internet"
+            android:textSize="@dimen/dialog_text" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

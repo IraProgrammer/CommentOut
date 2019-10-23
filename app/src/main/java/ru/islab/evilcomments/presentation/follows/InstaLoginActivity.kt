@@ -2,16 +2,17 @@ package ru.islab.evilcomments.presentation.follows
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.ActivityManager
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.view.animation.*
-import android.webkit.ValueCallback
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -28,6 +29,8 @@ import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import kotlinx.android.synthetic.main.activity_game.*
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.BuildConfig
@@ -55,6 +58,8 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     var parsingRunnable = Runnable {}
 
+    var anim: Animation? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(ru.islab.evilcomments.R.style.AppTheme)
         super.onCreate(savedInstanceState)
@@ -70,27 +75,28 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                 startActivity(intent)
                 finish()
             }
-
             initUI()
         }
 
-        instaLoginPresenter.checkNetwork()
+        anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
 
         instaLoginPresenter.observeNetwork(baseContext)
-
-        btnStartGame.setOnClickListener { v ->
-            val intent = Intent(baseContext, GameActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
     }
 
     override fun saveVersionCode() {
         prefs.putInt(VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
-    override fun noNetworkInStart() {
-        llNoNetwork.visibility = View.VISIBLE
+    override fun networkSuccessed() {
+        if (wvInsta.url != null && !wvInsta.url.equals("https://www.instagram.com/accounts/login/")) {
+            wvInsta.reload()
+        }
+        if (btnStartGame.visibility == View.GONE) {
+            pbHorizontal.visibility = View.VISIBLE
+            llNoNetwork.visibility = View.GONE
+            tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
+            progressAnimator?.start()
+        }
     }
 
     override fun networkFailed() {
@@ -99,21 +105,15 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             tvText.text = getString(ru.islab.evilcomments.R.string.please_check_internet)
             progressAnimator?.pause()
             pbHorizontal.visibility = View.GONE
-            wvInsta.stopLoading()
-        } else {
-            llNoNetwork.visibility = View.VISIBLE
         }
     }
 
-    override fun networkSuccessed() {
-        pbHorizontal.visibility = View.VISIBLE
-        llNoNetwork.visibility = View.GONE
-        tvText.text = getString(ru.islab.evilcomments.R.string.please_wait)
-        progressAnimator?.start()
-        wvInsta.reload()
-    }
-
     override fun initUI() {
+
+        Glide.with(this)
+            .load(R.drawable.logo_gif)
+            .into(logoGif)
+
         when {
             prefs.getBoolean(SHOW_ADULT) -> {
                 val l = layoutInflater.inflate(
@@ -159,7 +159,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         val btn = l.findViewById<Button>(ru.islab.evilcomments.R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l, 0, 48, 0, 48)
+            .setView(l)
             .setCancelable(false)
             .create()
 
@@ -178,33 +178,57 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     private fun onShowLoading() {
+
         llProgress.visibility = View.VISIBLE
         pbHorizontal.visibility = View.VISIBLE
+
+        btnStartGame.visibility = View.GONE
+
+        tvText.text = getString(R.string.please_wait)
 
         wvInsta.layoutParams = ConstraintLayout.LayoutParams(300, 500)
 
         progressAnimator = ObjectAnimator.ofInt(pbHorizontal, "progress", 0, 10000)
-        //progressAnimator?.addListener(onEnd = {
-        //pbHorizontal.visibility = View.GONE
-        //tvText.text = "Готово!"
-        // })
+        progressAnimator?.addListener(onEnd = {
+            if (!wvInsta.url.contains("/following/")) {
+                showAuthorizationScreen(
+                    "Произошла ошибка при импорте подписок. Пожалуйста, проверьте интернет-соединение попробуйте снова.",
+                    "ОК"
+                )
+            }
+        })
         progressAnimator?.duration = 38000
         progressAnimator?.interpolator = LinearInterpolator()
         progressAnimator?.start()
     }
 
-    override fun startGame() {
+    private fun showAuthorizationScreen(text: String, buttonText: String) {
+        wvInsta.stopLoading()
+        pbHorizontal.visibility = View.GONE
+        tvText.text = text
         btnStartGame.visibility = View.VISIBLE
-
-        val anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
         btnStartGame.startAnimation(anim)
+        btnStartGame.text = buttonText
+        btnStartGame.setOnClickListener {
+            finish()
+        }
+    }
 
-        //tvText.text = "Готово!"
+    override fun startGame() {
+        btnStartGame.text = "НАЧАТЬ ИГРУ!"
+        btnStartGame.setOnClickListener { v ->
+            progressAnimator?.removeAllListeners()
+            val intent = Intent(baseContext, GameActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        btnStartGame.visibility = View.VISIBLE
+        btnStartGame.startAnimation(anim)
     }
 
     private fun clickFollowers() {
         wvInsta.evaluateJavascript(
-            "(function() { return ('<html>'+document.getElementsByTagName('A')[2].click()+'</html>'); })();",
+            "(function() { return document.querySelectorAll('a[href$=\"/following/\"]')[0].click(); })();",
 
             null
         )
@@ -212,7 +236,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun initializeWebView() {
-
         wvInsta.settings.javaScriptEnabled = true
         wvInsta.settings.domStorageEnabled = true
         wvInsta.loadUrl(
@@ -220,7 +243,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         )
 
         wvInsta.webViewClient = object : WebViewClient() {
-
             override fun onPageFinished(view: WebView, url: String) {
                 super.onPageFinished(view, url)
                 when {
@@ -233,10 +255,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                         clickFollowers()
                     }
                     url.equals("https://www.instagram.com/") -> {
-                        if (!isLoadingShownNow) {
-                            onShowLoading()
-                            isLoadingShownNow = true
-                        }
                         wvInsta.evaluateJavascript(
                             "(function(){return window.document.body.outerHTML})();",
                             object : ValueCallback<String> {
@@ -247,6 +265,10 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                                     for (i in a.indices) {
                                         if (a[i].equals("username")) {
+                                            if (!isLoadingShownNow) {
+                                                onShowLoading()
+                                                isLoadingShownNow = true
+                                            }
                                             prefs.putString(AppPreferences.USER_NAME, a[i + 2])
                                             wvInsta.loadUrl("https://www.instagram.com/" + a[i + 2])
                                             break
@@ -255,11 +277,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                                 }
                             })
                     }
-                    url.contains("?error") -> Toast.makeText(
-                        baseContext,
-                        getString(ru.islab.evilcomments.R.string.please_check_internet),
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
             }
         }
@@ -305,8 +322,13 @@ class InstaLoginActivity : MvpAppCompatActivity(),
                             tvText.visibility = View.GONE
                             instaLoginPresenter.saveFollowsToDb(follows)
                         } else {
+                            progressAnimator?.removeAllListeners()
                             tvText.text =
-                                "К сожалению, Вы ни на кого не подписаны. Для продолжения игры необходимо наличие подписок на Вашем аккаунте."
+                                "Произошла ошибка при импорте подписок. Пожалуйста, убедитесь в наличии подписок на Вашем аккаунте и проверьте интернет-соединение."
+                            btnStartGame.text = "ПОНЯТНО"
+                            btnStartGame.visibility = View.VISIBLE
+                            btnStartGame.startAnimation(anim)
+                            btnStartGame.setOnClickListener { finish() }
                         }
                     }
                 })
@@ -314,6 +336,16 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
         parsingHandler.postDelayed(parsingRunnable, 30000)
 
+    }
+
+    override fun onResume() {
+        wvInsta.onResume()
+        super.onResume()
+    }
+
+    override fun onPause() {
+        wvInsta.onPause()
+        super.onPause()
     }
 
     override fun onDestroy() {

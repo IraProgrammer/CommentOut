@@ -2,18 +2,28 @@ package ru.islab.evilcomments.presentation.game
 
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.Typeface
+import android.graphics.*
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
+import android.util.Log
 import android.widget.Button
+import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
@@ -28,6 +38,7 @@ import ru.islab.evilcomments.di.module.GameModule
 import ru.islab.evilcomments.domain.Punishment
 import ru.islab.evilcomments.presentation.OneModel
 import javax.inject.Inject
+import javax.sql.DataSource
 
 
 class GameActivity : MvpAppCompatActivity(), GameView {
@@ -50,7 +61,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         MobileAds.initialize(this)
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd.adUnitId = "ca-app-pub-3446552315762824/4298236849"
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
@@ -81,7 +92,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
                 mInterstitialAd.loadAd(AdRequest.Builder().build())
             }
             if (gamePresenter.getRound() == 3 && mInterstitialAd.isLoaded) {
-                //mInterstitialAd.show()
+                mInterstitialAd.show()
             }
             gamePresenter.nextStep(if (btnComment.isSelected) GamePresenter.Action.COMMENT else GamePresenter.Action.PUNISHMENT)
         }
@@ -101,7 +112,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         toast?.cancel()
         toast = Toast.makeText(
             this,
-            "Нет-нет, не так быстро! Сначала выполни одно из заданий",
+            "Нет-нет, не так быстро!\nСначала выполни одно из заданий",
             Toast.LENGTH_SHORT
         )
         toast?.show()
@@ -209,9 +220,9 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     }
 
     private fun loadPicture(url: String) {
-        Glide.with(baseContext)
+        Glide.with(this)
+            .asDrawable()
             .load(url)
-            .apply(RequestOptions.circleCropTransform())
             .placeholder(R.drawable.ic_user)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(ivAvatar)
@@ -226,18 +237,13 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         val btn = l.findViewById<Button>(R.id.btnAgree)
 
         val dialog = AlertDialog.Builder(this)
-            .setView(l, 0, 48, 0, 48)
+            .setView(l)
             .create()
 
         dialog.window?.setBackgroundDrawableResource(R.color.transparent)
         dialog.show()
 
         btn.setOnClickListener { v -> dialog.dismiss() }
-    }
-
-    override fun onPause() {
-        gamePresenter.saveStateIfNeed()
-        super.onPause()
     }
 
     private fun openUserInInsta(username: String) {

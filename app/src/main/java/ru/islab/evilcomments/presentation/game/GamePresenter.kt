@@ -37,7 +37,7 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var isGameOver = false
 
-    private var delayMillis: Long = 3000
+    private var delayMillis: Long = 5000
 
     private var points = 0
 
@@ -50,6 +50,10 @@ class GamePresenter : MvpPresenter<GameView>() {
     private var compositeDisposable = CompositeDisposable()
 
     private var hasCallbacks = false
+
+    private val handler = Handler()
+
+    private var runnable = Runnable { }
 
     enum class Action { COMMENT, PUNISHMENT }
 
@@ -64,10 +68,11 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private fun enableButtonWithDelay() {
         hasCallbacks = true
-        Handler().postDelayed({
+        runnable = Runnable {
             canEnable = true
             hasCallbacks = false
-        }, delayMillis)
+        }
+        handler.postDelayed(runnable, delayMillis)
     }
 
     fun getRandomUser() {
@@ -86,6 +91,7 @@ class GamePresenter : MvpPresenter<GameView>() {
                 .subscribe(
                     { oneModel ->
                         switchAction(Action.COMMENT)
+                        saveStateIfNeed()
                         viewState.onShowNextRound(oneModel)
                     },
                     { throwable ->
@@ -189,13 +195,17 @@ class GamePresenter : MvpPresenter<GameView>() {
             isGameOver = true
             viewState.showGameOverDialog()
         } else {
-            getRandomUser()
             round++
+            getRandomUser()
             viewState.onSetRound(round)
         }
     }
 
     fun startNewGame() {
+        handler.removeCallbacks(runnable)
+        canEnable = false
+        enableButtonWithDelay()
+
         prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
 
         isGameOver = false
