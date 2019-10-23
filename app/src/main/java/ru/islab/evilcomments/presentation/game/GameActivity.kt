@@ -246,11 +246,6 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         btn.setOnClickListener { v -> dialog.dismiss() }
     }
 
-    override fun onPause() {
-        //gamePresenter.saveStateIfNeed()
-        super.onPause()
-    }
-
     private fun openUserInInsta(username: String) {
         val uri = Uri.parse("http://instagram.com/$username")
         val insta = Intent(Intent.ACTION_VIEW, uri)
