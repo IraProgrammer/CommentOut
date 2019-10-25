@@ -35,8 +35,6 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var canEnable = false
 
-    private var isGameOver = false
-
     private var delayMillis: Long = 5000
 
     private var points = 0
@@ -61,10 +59,10 @@ class GamePresenter : MvpPresenter<GameView>() {
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
     }
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        enableButtonWithDelay()
-    }
+//    override fun onFirstViewAttach() {
+//        super.onFirstViewAttach()
+//        enableButtonWithDelay()
+//    }
 
     private fun enableButtonWithDelay() {
         hasCallbacks = true
@@ -91,7 +89,7 @@ class GamePresenter : MvpPresenter<GameView>() {
                 .subscribe(
                     { oneModel ->
                         switchAction(Action.COMMENT)
-                        saveStateIfNeed()
+                        saveGame()
                         viewState.onShowNextRound(oneModel)
                     },
                     { throwable ->
@@ -174,11 +172,6 @@ class GamePresenter : MvpPresenter<GameView>() {
         prefs.putString(AppPreferences.PHOTO, oneModel.profilePictureUrl)
         prefs.putString(AppPreferences.ROUND, round.toString())
         prefs.putString(AppPreferences.POINTS, points.toString())
-        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, false)
-    }
-
-    fun setNeedNewGame() {
-        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
     }
 
     fun updatePoints() {
@@ -192,7 +185,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         }
 
         if (round == maxRoundCount) {
-            isGameOver = true
+            prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
             viewState.showGameOverDialog()
         } else {
             round++
@@ -206,9 +199,8 @@ class GamePresenter : MvpPresenter<GameView>() {
         canEnable = false
         enableButtonWithDelay()
 
-        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
+        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, false)
 
-        isGameOver = false
         round = 1
         points = 0
         viewState.onSetPoints(points)
@@ -216,14 +208,6 @@ class GamePresenter : MvpPresenter<GameView>() {
 
         getRandomUser()
         switchAction(Action.COMMENT)
-    }
-
-    fun saveStateIfNeed() {
-        if (!isGameOver) {
-            saveGame()
-        } else {
-            setNeedNewGame()
-        }
     }
 
     fun nextStep(action: Action) {

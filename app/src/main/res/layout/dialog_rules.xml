@@ -56,6 +56,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/text_all"
+                        android:gravity="center"
+                        android:text="@string/rules2"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/dialog_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/text_all"
+                        android:gravity="center"
+                        android:text="@string/rules3"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/dialog_text" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/text_all"
                         android:text="@string/luck"
                         android:textColor="@color/white"
                         android:textSize="@dimen/dialog_text" />

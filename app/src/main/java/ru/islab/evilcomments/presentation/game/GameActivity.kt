@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.text.Html
 import android.text.SpannableString
 import android.util.Log
+import android.view.Gravity
 import android.widget.Button
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -27,6 +28,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import com.google.android.play.core.appupdate.AppUpdateManager
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.dialog_new_game.*
 import moxy.MvpAppCompatActivity
@@ -53,15 +55,19 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     var toast: Toast? = null
 
+    private lateinit var appUpdateManager: AppUpdateManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
         setContentView(R.layout.activity_game)
 
+
+
         MobileAds.initialize(this)
 
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd.adUnitId = "ca-app-pub-3446552315762824/4298236849"
+        mInterstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
 
         val adRequest = AdRequest.Builder().build()
         adView.loadAd(adRequest)
@@ -80,7 +86,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         }
 
         if (prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
-            gamePresenter.getRandomUser()
+            gamePresenter.startNewGame()
         } else {
             gamePresenter.restoreGame()
         }

@@ -41,7 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:fontFamily="@font/text_all"
-                    android:text="МНЕ ЕСТЬ 18 ЛЕТ"
+                    android:text="ПРИНЯТЬ"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/pink_button"
                     android:textStyle="bold" />
