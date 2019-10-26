@@ -73,7 +73,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.islab.evilcomments.R.layout.activity_insta_login)
 
-        val appUpdateManager = AppUpdateManagerFactory.create(baseContext)
+        appUpdateManager = AppUpdateManagerFactory.create(baseContext)
 
         appUpdateManager.getAppUpdateInfo().addOnSuccessListener { appUpdateInfo ->
             if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
