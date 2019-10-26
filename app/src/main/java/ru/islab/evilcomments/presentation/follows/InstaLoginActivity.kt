@@ -2,11 +2,8 @@ package ru.islab.evilcomments.presentation.follows
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
+import android.content.IntentSender
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -14,7 +11,6 @@ import android.view.View
 import android.view.animation.*
 import android.webkit.*
 import android.widget.CheckBox
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.animation.addListener
 import androidx.core.view.isVisible
@@ -29,20 +25,29 @@ import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import kotlinx.android.synthetic.main.activity_game.*
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.BuildConfig
 import ru.islab.evilcomments.R
 import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_ADULT
 import ru.islab.evilcomments.data.AppPreferences.Companion.VERSION_CODE
 import ru.islab.evilcomments.di.module.InstaLoginModule
+import java.lang.Exception
 import javax.inject.Inject
 
 
 class InstaLoginActivity : MvpAppCompatActivity(),
     InstaLoginView {
+
+    private val UPDATE_CODE = 12
 
     @InjectPresenter
     lateinit var instaLoginPresenter: InstaLoginPresenter
@@ -60,11 +65,27 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
     var anim: Animation? = null
 
+    private lateinit var appUpdateManager: AppUpdateManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(ru.islab.evilcomments.R.style.AppTheme)
         super.onCreate(savedInstanceState)
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.islab.evilcomments.R.layout.activity_insta_login)
+
+        val appUpdateManager = AppUpdateManagerFactory.create(baseContext)
+
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ) {
+                try {
+                    requestUpdate(appUpdateInfo);
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
 
         if (BuildConfig.VERSION_CODE > prefs.getInt(VERSION_CODE)) {
             instaLoginPresenter.putDataToDb()
@@ -81,6 +102,15 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
 
         instaLoginPresenter.observeNetwork(baseContext)
+    }
+
+    private fun requestUpdate(appUpdateInfo: AppUpdateInfo?) {
+        appUpdateManager.startUpdateFlowForResult(
+            appUpdateInfo,
+            AppUpdateType.IMMEDIATE,
+            this,
+            UPDATE_CODE
+        )
     }
 
     override fun saveVersionCode() {
@@ -344,6 +374,21 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     override fun onResume() {
         wvInsta.onResume()
         super.onResume()
+
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener { appUpdateInfo ->
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                        appUpdateInfo,
+                        AppUpdateType.IMMEDIATE,
+                        this,
+                        UPDATE_CODE
+                    );
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
     override fun onPause() {

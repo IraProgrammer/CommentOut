@@ -29,6 +29,9 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.android.synthetic.main.activity_game.*
 import kotlinx.android.synthetic.main.dialog_new_game.*
 import moxy.MvpAppCompatActivity
@@ -55,14 +58,10 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
     var toast: Toast? = null
 
-    private lateinit var appUpdateManager: AppUpdateManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
         setContentView(R.layout.activity_game)
-
-
 
         MobileAds.initialize(this)
 
