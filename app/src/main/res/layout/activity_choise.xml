@@ -27,11 +27,13 @@
             android:layout_width="3dp"
             android:background="@color/colorPrimary"
             android:layout_height="match_parent"/>
-        <TextView
+        <Button
+            android:id="@+id/btnInsta"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:textStyle="bold"
-            android:text="ИМПОРТ ЧЕОЕЗ ЛОГИЕ\nИ ПАРОЛЬ"/>
+            android:text="INSTAGRAM"/>
     </LinearLayout>
 
     <LinearLayout
@@ -45,11 +47,13 @@
             android:layout_width="3dp"
             android:background="@color/colorPrimary"
             android:layout_height="match_parent"/>
-        <TextView
+        <Button
+            android:id="@+id/btnVk"
             android:layout_width="wrap_content"
             android:textStyle="bold"
             android:layout_height="wrap_content"
-            android:text="ИМПОРТ ПО USERNAME\nБЕЗ ПАРОЛЯ"/>
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:text="VK"/>
     </LinearLayout>
 
 </LinearLayout>

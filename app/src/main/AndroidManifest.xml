@@ -17,17 +17,24 @@
         <activity
             android:name="ru.islab.evilcomments.presentation.follows.InstaLoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Launcher">
+            android:theme="@style/AppTheme.Launcher"></activity>
+        <activity
+            android:name="ru.islab.evilcomments.presentation.game.GameActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Game"></activity>
+
+        <activity
+            android:name="ru.islab.evilcomments.presentation.sign_in.SignInActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.Game">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="ru.islab.evilcomments.presentation.game.GameActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Game"></activity>
+
+        <activity android:name="com.vk.sdk.VKServiceActivity" android:label="ServiceActivity" android:theme="@style/VK.Transparent" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"

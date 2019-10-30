@@ -12,4 +12,6 @@
 
     <string name="please_check_internet">Пожалуйста, проверьте Интернет-соединение.</string>
     <string name="please_wait">Пожалуйста, подождите, идёт импорт подписок</string>
+
+    <integer name="com_vk_sdk_AppId">7190135</integer>
 </resources>
