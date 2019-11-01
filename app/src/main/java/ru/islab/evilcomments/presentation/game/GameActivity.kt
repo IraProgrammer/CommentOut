@@ -54,12 +54,16 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @Inject
     lateinit var prefs: AppPreferences
 
+    private var isVK = false
+
     private lateinit var mInterstitialAd: InterstitialAd
 
     var toast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        isVK = intent.getBooleanExtra("type", false)
+        gamePresenter.setType(isVK)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
         setContentView(R.layout.activity_game)
 

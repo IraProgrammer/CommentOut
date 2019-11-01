@@ -3,6 +3,7 @@ package ru.islab.evilcomments.di
 import dagger.Component
 import ru.islab.evilcomments.di.component.GameComponent
 import ru.islab.evilcomments.di.component.InstaLoginComponent
+import ru.islab.evilcomments.di.component.SignInComponent
 import ru.islab.evilcomments.di.module.*
 import ru.islab.evilcomments.di.scope.PerApplication
 
@@ -14,4 +15,6 @@ interface AppComponent {
     fun addInstaLoginComponent(instaLoginModule: InstaLoginModule): InstaLoginComponent
 
     fun addGameComponent(gameModule: GameModule): GameComponent
+
+    fun addSignInComponent(signInModule: SignInModule): SignInComponent
 }

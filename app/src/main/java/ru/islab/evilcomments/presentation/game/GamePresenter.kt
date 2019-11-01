@@ -19,6 +19,7 @@ import ru.islab.evilcomments.di.module.GameModule
 import ru.islab.evilcomments.domain.EvilComment
 import ru.islab.evilcomments.domain.Follow
 import ru.islab.evilcomments.domain.Punishment
+import ru.islab.evilcomments.domain.VKUser
 import ru.islab.evilcomments.presentation.OneModel
 import java.util.*
 import javax.inject.Inject
@@ -53,6 +54,8 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var runnable = Runnable { }
 
+    private var type = false
+
     enum class Action { COMMENT, PUNISHMENT }
 
     init {
@@ -71,6 +74,31 @@ class GamePresenter : MvpPresenter<GameView>() {
             hasCallbacks = false
         }
         handler.postDelayed(runnable, delayMillis)
+    }
+
+    fun getRandomUserVK() {
+        compositeDisposable.add(
+            Single.zip(
+                db.vkUserDao().getAll(),
+                db.commentDao().getAll(),
+                db.punishmentDao().getAll(),
+                Function3<List<VKUser>, List<EvilComment>, List<Punishment>, OneModel> { follows, comments, punishments ->
+                    createOneModel2(follows, comments, punishments)
+                }
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSuccess { oneModel -> this.oneModel = oneModel }
+                .subscribe(
+                    { oneModel ->
+                        switchAction(Action.COMMENT)
+                        saveGame()
+                        viewState.onShowNextRound(oneModel)
+                    },
+                    { throwable ->
+                        var c = 8
+                    })
+        )
     }
 
     fun getRandomUser() {
@@ -107,6 +135,18 @@ class GamePresenter : MvpPresenter<GameView>() {
         val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size)]
 
         return OneModel(follow.username, follow.profilePictureUrl, comment.text, punishment.text)
+    }
+
+    fun createOneModel2(
+        follows: List<VKUser>,
+        comments: List<EvilComment>,
+        punishments: List<Punishment>
+    ): OneModel {
+        val follow = follows[getRandom(USERS_SET, follows.size)]
+        val comment = comments[getRandom(COMMENTS_SET, comments.size)]
+        val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size)]
+
+        return OneModel(follow.lastName, follow.photo, comment.text, punishment.text)
     }
 
     private fun getRandom(key: String, bound: Int): Int {
@@ -189,7 +229,8 @@ class GamePresenter : MvpPresenter<GameView>() {
             viewState.showGameOverDialog()
         } else {
             round++
-            getRandomUser()
+            if (type) getRandomUserVK() else
+                getRandomUser()
             viewState.onSetRound(round)
         }
     }
@@ -206,7 +247,8 @@ class GamePresenter : MvpPresenter<GameView>() {
         viewState.onSetPoints(points)
         viewState.onSetRound(round)
 
-        getRandomUser()
+        if (type) getRandomUserVK() else
+            getRandomUser()
         switchAction(Action.COMMENT)
     }
 
@@ -223,4 +265,8 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     fun getRound() = round
+
+    fun setType(vk: Boolean) {
+        type = vk
+    }
 }

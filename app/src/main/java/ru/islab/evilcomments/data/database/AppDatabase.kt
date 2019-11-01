@@ -5,15 +5,18 @@ import androidx.room.RoomDatabase
 import ru.islab.evilcomments.domain.EvilComment
 import ru.islab.evilcomments.domain.Follow
 import ru.islab.evilcomments.domain.Punishment
+import ru.islab.evilcomments.domain.VKUser
 
 @Database(
-    entities = [Follow::class, EvilComment::class, Punishment::class],
-    version = 1,
+    entities = [Follow::class, VKUser::class, EvilComment::class, Punishment::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun followDao(): FollowDao
+
+    abstract fun vkUserDao(): VKUserDao
 
     abstract fun commentDao(): CommentDao
 
