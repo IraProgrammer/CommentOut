@@ -8,6 +8,5 @@ import moxy.viewstate.strategy.StateStrategyType
 interface SignInView: MvpView{
     fun startGame()
     fun authorize()
-    fun saveVersionCode()
     fun insta()
 }

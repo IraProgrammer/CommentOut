@@ -68,10 +68,6 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
         }
     }
 
-    override fun saveVersionCode() {
-        prefs.putInt(AppPreferences.VERSION_CODE, BuildConfig.VERSION_CODE)
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val callback = object : VKAuthCallback {
             override fun onLogin(token: VKAccessToken) {

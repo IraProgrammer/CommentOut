@@ -35,38 +35,13 @@ class SignInPresenter : MvpPresenter<SignInView>() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     viewState.startGame()
-                }, { throwable -> {
-                    var c = 100 } })
-        )
-    }
-
-    fun putDataToDb() {
-        compositeDisposable.add(
-            db.commentDao().insert(dataHelper.commentsList)
-                .andThen(db.punishmentDao().insert(dataHelper.punishmentsList))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    viewState.saveVersionCode()
-                    viewState.authorize()
                 }, { throwable ->
-                    var c = 8
+                    run {
+                        var c = 100
+                    }
                 })
         )
     }
-
-//    fun putDataToDb() {
-//        compositeDisposable.add(
-//            db.commentDao().insert(dataHelper.commentsList)
-//                .andThen(db.punishmentDao().insert(dataHelper.punishmentsList))
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    viewState.saveVersionCode()
-//                    viewState.initUI()
-//                }, { throwable -> })
-//        )
-//    }
 
     override fun onDestroy() {
         compositeDisposable.clear()

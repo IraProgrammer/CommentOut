@@ -11,7 +11,7 @@ class VKFriendsRequest(uid: Int = 0) : VKRequest<List<VKUser>>("friends.get") {
             addParam("user_id", uid)
         }
         addParam("order", "hints")
-        addParam("count", 10)
+        addParam("count", 1000)
         addParam(VKApiCodes.PARAM_LANG, "ru")
 
         addParam("fields", "photo_200_orig, can_write_private_message, can_see_all_posts, can_post")

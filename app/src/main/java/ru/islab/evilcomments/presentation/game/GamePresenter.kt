@@ -146,7 +146,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         val comment = comments[getRandom(COMMENTS_SET, comments.size)]
         val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size)]
 
-        return OneModel(follow.lastName, follow.photo, comment.text, punishment.text)
+        return OneModel(follow.name, follow.photo, comment.text, punishment.text)
     }
 
     private fun getRandom(key: String, bound: Int): Int {

@@ -10,8 +10,7 @@ import org.json.JSONObject
 data class VKUser(
     @PrimaryKey
     val id: Int = 0,
-    val firstName: String = "",
-    val lastName: String = "",
+    val name: String = "",
     val photo: String = "",
     val canPost: Boolean = false
 ) : Parcelable {
@@ -20,14 +19,12 @@ data class VKUser(
         parcel.readInt(),
         parcel.readString() ?: "",
         parcel.readString() ?: "",
-        parcel.readString() ?: "",
         parcel.readByte() != 0.toByte()
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
-        parcel.writeString(firstName)
-        parcel.writeString(lastName)
+        parcel.writeString(name)
         parcel.writeString(photo)
         parcel.writeByte(if (canPost) 1 else 0)
     }
@@ -47,10 +44,9 @@ data class VKUser(
 
         fun parse(json: JSONObject) = VKUser(
             id = json.optInt("id", 0),
-            firstName = json.optString("first_name", ""),
-            lastName = json.optString("last_name", ""),
+            name = json.optString("first_name", "") + " " + json.optString("last_name", ""),
             photo = json.optString("photo_200_orig", ""),
-            canPost = json.optBoolean("can_post", true)
+            canPost = json.optInt("can_post") == 1
         )
     }
 }
