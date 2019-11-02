@@ -1,4 +1,4 @@
-package ru.islab.evilcomments.presentation.follows
+package ru.islab.evilcomments.presentation.insta
 
 import android.content.Context
 import com.github.pwittchen.reactivenetwork.library.rx2.ReactiveNetwork

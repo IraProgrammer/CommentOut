@@ -15,9 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="ru.islab.evilcomments.presentation.follows.InstaLoginActivity"
+            android:name="ru.islab.evilcomments.presentation.insta.InstaLoginActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Launcher"></activity>
+            android:theme="@style/AppTheme.Game"></activity>
         <activity
             android:name="ru.islab.evilcomments.presentation.game.GameActivity"
             android:screenOrientation="portrait"
@@ -25,8 +25,18 @@
 
         <activity
             android:name="ru.islab.evilcomments.presentation.sign_in.SignInActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name="ru.islab.evilcomments.presentation.creators.CreatorsActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+        <activity
+            android:name="ru.islab.evilcomments.presentation.menu.MenuActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Game">
+            android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -14,4 +14,9 @@
     <string name="please_wait">Пожалуйста, подождите, идёт импорт подписок</string>
 
     <integer name="com_vk_sdk_AppId">7190135</integer>
+
+    <string-array name="creators">
+        <item>irishkalaskova</item>
+        <item>_operay_</item>
+    </string-array>
 </resources>

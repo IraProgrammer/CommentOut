@@ -1,4 +1,4 @@
-package ru.islab.evilcomments.presentation.follows
+package ru.islab.evilcomments.presentation.insta
 
 import moxy.MvpView
 import moxy.viewstate.strategy.OneExecutionStateStrategy

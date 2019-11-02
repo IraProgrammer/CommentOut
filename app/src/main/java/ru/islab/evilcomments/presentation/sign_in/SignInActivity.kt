@@ -28,6 +28,7 @@ import ru.islab.evilcomments.di.module.SignInModule
 import ru.islab.evilcomments.requests.VKFriendsRequest
 import ru.islab.evilcomments.domain.VKUser
 import ru.islab.evilcomments.presentation.game.GameActivity
+import ru.islab.evilcomments.presentation.insta.InstaLoginActivity
 import java.lang.Exception
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -40,42 +41,30 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
     @InjectPresenter
     lateinit var presenter: SignInPresenter
 
-    private lateinit var appUpdateManager: AppUpdateManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(ru.islab.evilcomments.R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(ru.islab.evilcomments.R.layout.activity_choise)
         App.appComponent?.addSignInComponent(SignInModule())?.inject(this)
 
-        appUpdateManager = AppUpdateManagerFactory.create(baseContext)
-
-        appUpdateManager.getAppUpdateInfo().addOnSuccessListener { appUpdateInfo ->
-            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
-                appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
-            ) {
-                try {
-                    requestUpdate(appUpdateInfo);
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-        }
-
         VK.initialize(baseContext)
 
         btnVk.setOnClickListener { authorize() }
+
+        btnInsta.setOnClickListener { insta() }
+    }
+
+    override fun insta(){
+        val intent = Intent(baseContext, InstaLoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun authorize() {
-        if (BuildConfig.VERSION_CODE > prefs.getInt(AppPreferences.VERSION_CODE)) {
-            presenter.putDataToDb()
+        if (VK.isLoggedIn()) {
+            requestFriends()
         } else {
-            if (VK.isLoggedIn()) {
-                requestFriends()
-            } else {
-                VK.login(this, arrayListOf(VKScope.FRIENDS, VKScope.PHOTOS))
-            }
+            VK.login(this, arrayListOf(VKScope.FRIENDS, VKScope.PHOTOS))
         }
     }
 
@@ -109,9 +98,6 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
                 Log.e("", error.toString())
             }
         })
-    }
-
-    private fun requestUpdate(appUpdateInfo: AppUpdateInfo?) {
     }
 
     override fun startGame() {
