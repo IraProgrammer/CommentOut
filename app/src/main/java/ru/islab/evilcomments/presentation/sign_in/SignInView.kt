@@ -7,6 +7,6 @@ import moxy.viewstate.strategy.StateStrategyType
 @StateStrategyType(value = OneExecutionStateStrategy::class)
 interface SignInView: MvpView{
     fun startGame()
-    fun authorize()
-    fun insta()
+    fun authorizeVK()
+    fun authorizeInsta()
 }

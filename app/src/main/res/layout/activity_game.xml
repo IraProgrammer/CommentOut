@@ -21,14 +21,14 @@
             android:layout_alignParentTop="true">
 
             <Button
-                android:id="@+id/ivNewGame"
+                android:id="@+id/ivMenu"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="@dimen/button_icon"
                 android:layout_height="@dimen/button_icon"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/margin_icon"
-                android:background="@drawable/ic_reload"
+                android:background="@drawable/ic_menu"
                 android:fontFamily="@font/text_signature" />
 
             <Button

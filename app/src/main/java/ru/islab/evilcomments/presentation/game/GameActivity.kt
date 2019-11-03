@@ -2,48 +2,29 @@ package ru.islab.evilcomments.presentation.game
 
 import android.content.*
 import android.content.pm.PackageManager
-import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Html
-import android.text.SpannableString
-import android.util.Log
-import android.view.Gravity
 import android.widget.Button
-import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.SimpleTarget
-import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.android.synthetic.main.activity_game.*
-import kotlinx.android.synthetic.main.dialog_new_game.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.R
 import ru.islab.evilcomments.data.AppPreferences
 import ru.islab.evilcomments.di.module.GameModule
-import ru.islab.evilcomments.domain.Punishment
 import ru.islab.evilcomments.presentation.OneModel
+import ru.islab.evilcomments.presentation.menu.MenuActivity
+import ru.islab.evilcomments.presentation.sign_in.SignInActivity
 import javax.inject.Inject
-import javax.sql.DataSource
 
 
 class GameActivity : MvpAppCompatActivity(), GameView {
@@ -54,16 +35,12 @@ class GameActivity : MvpAppCompatActivity(), GameView {
     @Inject
     lateinit var prefs: AppPreferences
 
-    private var isVK = false
-
     private lateinit var mInterstitialAd: InterstitialAd
 
     var toast: Toast? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        isVK = intent.getBooleanExtra("type", false)
-        gamePresenter.setType(isVK)
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
         setContentView(R.layout.activity_game)
 
@@ -84,8 +61,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             showRulesDialog()
         }
 
-        ivNewGame.setOnClickListener { v ->
-            showNewGameDialog()
+        ivMenu.setOnClickListener { v ->
+            showBackToMenuDialog()
         }
 
         if (prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
@@ -133,7 +110,7 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             null
         )
 
-        val tv = l.findViewById<TextView>(R.id.tvDoYouWantNewGame)
+        val tv = l.findViewById<TextView>(R.id.tvDoYouWantBackToMenu)
         val btnExit = l.findViewById<Button>(R.id.btnExit)
         val btnNewGame = l.findViewById<Button>(R.id.btnNewGame)
 
@@ -164,13 +141,13 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         tvPoints.text = points.toString()
     }
 
-    private fun showNewGameDialog() {
+    private fun showBackToMenuDialog() {
         val l = layoutInflater.inflate(
-            R.layout.dialog_new_game,
+            R.layout.dialog_back_to_menu,
             null
         )
 
-        val tv = l.findViewById<TextView>(R.id.tvDoYouWantNewGame)
+        val tv = l.findViewById<TextView>(R.id.tvDoYouWantBackToMenu)
         val btnYes = l.findViewById<Button>(R.id.btnYes)
         val btnNo = l.findViewById<Button>(R.id.btnNo)
 
@@ -181,13 +158,19 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         dialog.window?.setBackgroundDrawableResource(R.color.transparent)
         dialog.show()
 
-        tv.text = "Вы действительно хотите начать новую игру?"
+        tv.text = "Вы действительно хотите вернуться в главное меню?"
 
         btnYes.setOnClickListener { v ->
             dialog.dismiss()
-            gamePresenter.startNewGame()
+            showMenu()
         }
         btnNo.setOnClickListener { v -> dialog.dismiss() }
+    }
+
+    private fun showMenu() {
+        val intent = Intent(baseContext, MenuActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun commentActive() {

@@ -29,7 +29,7 @@ class SignInPresenter : MvpPresenter<SignInView>() {
 
     fun saveFollowsToDb(follows: List<VKUser>) {
         compositeDisposable.add(
-            db.vkUserDao().insert(follows)
+            db.vkUserDao().insert(follows.shuffled())
                 .startWith(db.vkUserDao().delete())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

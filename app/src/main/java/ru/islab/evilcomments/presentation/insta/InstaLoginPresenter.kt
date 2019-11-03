@@ -31,7 +31,7 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
 
     fun saveFollowsToDb(follows: List<Follow>) {
         compositeDisposable.add(
-            db.followDao().insert(follows)
+            db.followDao().insert(follows.shuffled())
                 .startWith(db.followDao().delete())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -54,19 +54,6 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
                         viewState.networkFailed()
                     }
                 })
-    }
-
-    fun putDataToDb() {
-        compositeDisposable.add(
-            db.commentDao().insert(dataHelper.commentsList)
-                .andThen(db.punishmentDao().insert(dataHelper.punishmentsList))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    viewState.saveVersionCode()
-                    viewState.initUI()
-                }, { throwable -> })
-        )
     }
 
     override fun onDestroy() {

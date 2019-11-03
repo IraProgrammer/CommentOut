@@ -65,7 +65,8 @@ class AppPreferences(context: Context) {
     companion object {
         const val APP_PREFERENCES_FILE_NAME = "userdata"
         const val USER_NAME = "username"
-        const val USERS_SET = "usersSet"
+        const val VK_USERS_SET = "vk_usersSet"
+        const val INSTA_USERS_SET = "insta_usersSet"
         const val COMMENTS_SET = "commentsSet"
         const val PUNISHMENT_SET = "punishmentSet"
         const val SHOW_SAFE = "showSafe"
@@ -79,5 +80,6 @@ class AppPreferences(context: Context) {
         const val NEED_NEW_GAME = "needNewGame"
         const val POINTS = "points"
         const val VERSION_CODE = "versionCode"
+        const val VK_GAME = "isVK"
     }
 }

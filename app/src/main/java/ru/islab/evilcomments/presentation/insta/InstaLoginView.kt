@@ -10,5 +10,4 @@ interface InstaLoginView: MvpView{
     fun networkSuccessed()
     fun networkFailed()
     fun initUI()
-    fun saveVersionCode()
 }

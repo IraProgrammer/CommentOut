@@ -59,25 +59,16 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.islab.evilcomments.R.layout.activity_insta_login)
 
-        if (BuildConfig.VERSION_CODE > prefs.getInt(VERSION_CODE)) {
-            instaLoginPresenter.putDataToDb()
-        } else {
-
-            if (!prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
-                val intent = Intent(baseContext, GameActivity::class.java)
-                startActivity(intent)
-                finish()
-            }
-            initUI()
+        if (!prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
+            val intent = Intent(baseContext, GameActivity::class.java)
+            startActivity(intent)
+            finish()
         }
+        initUI()
 
         anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
 
         instaLoginPresenter.observeNetwork(baseContext)
-    }
-
-    override fun saveVersionCode() {
-        prefs.putInt(VERSION_CODE, BuildConfig.VERSION_CODE)
     }
 
     override fun networkSuccessed() {

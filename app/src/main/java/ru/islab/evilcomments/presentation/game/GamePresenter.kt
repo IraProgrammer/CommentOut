@@ -6,15 +6,16 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.Function3
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_game.*
 import moxy.InjectViewState
 import moxy.MvpPresenter
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.data.database.AppDatabase
 import ru.islab.evilcomments.data.AppPreferences
 import ru.islab.evilcomments.data.AppPreferences.Companion.COMMENTS_SET
+import ru.islab.evilcomments.data.AppPreferences.Companion.INSTA_USERS_SET
 import ru.islab.evilcomments.data.AppPreferences.Companion.PUNISHMENT_SET
-import ru.islab.evilcomments.data.AppPreferences.Companion.USERS_SET
+import ru.islab.evilcomments.data.AppPreferences.Companion.VK_GAME
+import ru.islab.evilcomments.data.AppPreferences.Companion.VK_USERS_SET
 import ru.islab.evilcomments.di.module.GameModule
 import ru.islab.evilcomments.domain.EvilComment
 import ru.islab.evilcomments.domain.Follow
@@ -54,18 +55,11 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var runnable = Runnable { }
 
-    private var type = false
-
     enum class Action { COMMENT, PUNISHMENT }
 
     init {
         App.appComponent?.addGameComponent(GameModule())?.inject(this)
     }
-
-//    override fun onFirstViewAttach() {
-//        super.onFirstViewAttach()
-//        enableButtonWithDelay()
-//    }
 
     private fun enableButtonWithDelay() {
         hasCallbacks = true
@@ -76,16 +70,31 @@ class GamePresenter : MvpPresenter<GameView>() {
         handler.postDelayed(runnable, delayMillis)
     }
 
-    fun getRandomUserVK() {
-        compositeDisposable.add(
-            Single.zip(
+    private fun getRandomUser() {
+        val function: Single<OneModel>
+
+        if (prefs.getBoolean(VK_GAME)) {
+            function = Single.zip(
                 db.vkUserDao().getAll(),
                 db.commentDao().getAll(),
                 db.punishmentDao().getAll(),
-                Function3<List<VKUser>, List<EvilComment>, List<Punishment>, OneModel> { follows, comments, punishments ->
-                    createOneModel2(follows, comments, punishments)
+                Function3<List<VKUser>, List<EvilComment>, List<Punishment>, OneModel> { VKuser, comments, punishments ->
+                    createOneModelFromVK(VKuser, comments, punishments)
                 }
             )
+        } else {
+            function = Single.zip(
+                db.followDao().getAll(),
+                db.commentDao().getAll(),
+                db.punishmentDao().getAll(),
+                Function3<List<Follow>, List<EvilComment>, List<Punishment>, OneModel> { follows, comments, punishments ->
+                    createOneModelFromInsta(follows, comments, punishments)
+                }
+            )
+        }
+
+        compositeDisposable.add(
+            function
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSuccess { oneModel -> this.oneModel = oneModel }
@@ -101,55 +110,31 @@ class GamePresenter : MvpPresenter<GameView>() {
         )
     }
 
-    fun getRandomUser() {
-        compositeDisposable.add(
-            Single.zip(
-                db.followDao().getAll(),
-                db.commentDao().getAll(),
-                db.punishmentDao().getAll(),
-                Function3<List<Follow>, List<EvilComment>, List<Punishment>, OneModel> { follows, comments, punishments ->
-                    createOneModel(follows, comments, punishments)
-                }
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSuccess { oneModel -> this.oneModel = oneModel }
-                .subscribe(
-                    { oneModel ->
-                        switchAction(Action.COMMENT)
-                        saveGame()
-                        viewState.onShowNextRound(oneModel)
-                    },
-                    { throwable ->
-                    })
-        )
-    }
-
-    fun createOneModel(
+    private fun createOneModelFromInsta(
         follows: List<Follow>,
         comments: List<EvilComment>,
         punishments: List<Punishment>
     ): OneModel {
-        val follow = follows[getRandom(USERS_SET, follows.size)]
-        val comment = comments[getRandom(COMMENTS_SET, comments.size)]
-        val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size)]
+        val follow = getRandomUniqueName(follows)
+        val comment = comments[getRandomUniqueInt(COMMENTS_SET, comments.size)]
+        val punishment = punishments[getRandomUniqueInt(PUNISHMENT_SET, punishments.size)]
 
         return OneModel(follow.username, follow.profilePictureUrl, comment.text, punishment.text)
     }
 
-    fun createOneModel2(
-        follows: List<VKUser>,
+    private fun createOneModelFromVK(
+        VKUsers: List<VKUser>,
         comments: List<EvilComment>,
         punishments: List<Punishment>
     ): OneModel {
-        val follow = follows[getRandom(USERS_SET, follows.size)]
-        val comment = comments[getRandom(COMMENTS_SET, comments.size)]
-        val punishment = punishments[getRandom(PUNISHMENT_SET, punishments.size)]
+        val vkUser = getRandomUniqueName(VKUsers)
+        val comment = comments[getRandomUniqueInt(COMMENTS_SET, comments.size)]
+        val punishment = punishments[getRandomUniqueInt(PUNISHMENT_SET, punishments.size)]
 
-        return OneModel(follow.name, follow.photo, comment.text, punishment.text)
+        return OneModel(vkUser.name, vkUser.photo, comment.text, punishment.text)
     }
 
-    private fun getRandom(key: String, bound: Int): Int {
+    private fun getRandomUniqueInt(key: String, bound: Int): Int {
         var set = prefs.getSet(key)
 
         if (set.size == bound) {
@@ -168,6 +153,50 @@ class GamePresenter : MvpPresenter<GameView>() {
         prefs.addToSet(key, res.toString())
 
         return res
+    }
+
+    private fun getRandomUniqueName(users: List<VKUser>): VKUser {
+        var set = prefs.getSet(VK_USERS_SET)
+
+        if (set.size == users.size) {
+            set = HashSet()
+            prefs.clearSet(VK_USERS_SET)
+        }
+
+        var user = users[0]
+
+        for (us in users) {
+            if (!set.contains(us.name)) {
+                user = us
+                break
+            }
+        }
+
+        prefs.addToSet(VK_USERS_SET, user.name)
+
+        return user
+    }
+
+    private fun getRandomUniqueName(users: List<Follow>): Follow {
+        var set = prefs.getSet(INSTA_USERS_SET)
+
+        if (set.size == users.size) {
+            set = HashSet()
+            prefs.clearSet(INSTA_USERS_SET)
+        }
+
+        var user = users[0]
+
+        for (us in users) {
+            if (!set.contains(us.username)) {
+                user = us
+                break
+            }
+        }
+
+        prefs.addToSet(INSTA_USERS_SET, user.username)
+
+        return user
     }
 
     override fun onDestroy() {
@@ -229,8 +258,7 @@ class GamePresenter : MvpPresenter<GameView>() {
             viewState.showGameOverDialog()
         } else {
             round++
-            if (type) getRandomUserVK() else
-                getRandomUser()
+            getRandomUser()
             viewState.onSetRound(round)
         }
     }
@@ -247,8 +275,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         viewState.onSetPoints(points)
         viewState.onSetRound(round)
 
-        if (type) getRandomUserVK() else
-            getRandomUser()
+        getRandomUser()
         switchAction(Action.COMMENT)
     }
 
@@ -265,8 +292,4 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     fun getRound() = round
-
-    fun setType(vk: Boolean) {
-        type = vk
-    }
 }

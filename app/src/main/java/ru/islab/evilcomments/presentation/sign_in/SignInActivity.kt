@@ -1,36 +1,26 @@
 package ru.islab.evilcomments.presentation.sign_in
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.play.core.appupdate.AppUpdateInfo
-import com.google.android.play.core.appupdate.AppUpdateManager
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
+import android.widget.Toast
 import com.vk.api.sdk.*
 import com.vk.api.sdk.auth.VKAccessToken
 import com.vk.api.sdk.auth.VKAuthCallback
 import com.vk.api.sdk.auth.VKScope
-import com.vk.api.sdk.exceptions.VKApiCodes
 import com.vk.api.sdk.exceptions.VKApiExecutionException
-import com.vk.api.sdk.utils.VKUtils
-import com.vk.api.sdk.utils.log.DefaultApiLogger
-import com.vk.api.sdk.utils.log.Logger
 import kotlinx.android.synthetic.main.activity_choise.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.App
-import ru.islab.evilcomments.BuildConfig
 import ru.islab.evilcomments.data.AppPreferences
-import ru.islab.evilcomments.di.module.GameModule
+import ru.islab.evilcomments.data.AppPreferences.Companion.VK_GAME
 import ru.islab.evilcomments.di.module.SignInModule
 import ru.islab.evilcomments.requests.VKFriendsRequest
 import ru.islab.evilcomments.domain.VKUser
 import ru.islab.evilcomments.presentation.game.GameActivity
 import ru.islab.evilcomments.presentation.insta.InstaLoginActivity
-import java.lang.Exception
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SignInActivity : MvpAppCompatActivity(), SignInView {
@@ -49,22 +39,23 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
 
         VK.initialize(baseContext)
 
-        btnVk.setOnClickListener { authorize() }
+        btnVk.setOnClickListener { authorizeVK() }
 
-        btnInsta.setOnClickListener { insta() }
+        btnInsta.setOnClickListener { authorizeInsta() }
     }
 
-    override fun insta(){
+    override fun authorizeInsta() {
+        prefs.putBoolean(VK_GAME, false)
         val intent = Intent(baseContext, InstaLoginActivity::class.java)
         startActivity(intent)
         finish()
     }
 
-    override fun authorize() {
+    override fun authorizeVK() {
         if (VK.isLoggedIn()) {
             requestFriends()
         } else {
-            VK.login(this, arrayListOf(VKScope.FRIENDS, VKScope.PHOTOS))
+            VK.login(this, arrayListOf(VKScope.FRIENDS))
         }
     }
 
@@ -83,6 +74,8 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
     }
 
     private fun requestFriends() {
+        //var pd = ProgressDialog(baseContext)
+        //pd.show()
         VK.execute(VKFriendsRequest(), object : VKApiCallback<List<VKUser>> {
             override fun success(result: List<VKUser>) {
                 if (!isFinishing && !result.isEmpty()) {
@@ -91,14 +84,15 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
             }
 
             override fun fail(error: VKApiExecutionException) {
-                Log.e("", error.toString())
+                //pd.dismiss()
+                Toast.makeText(baseContext, error.errorMsg, Toast.LENGTH_LONG).show()
             }
         })
     }
 
     override fun startGame() {
+        prefs.putBoolean(VK_GAME, true)
         val intent = Intent(baseContext, GameActivity::class.java)
-        intent.putExtra("type", true)
         startActivity(intent)
         finish()
     }
