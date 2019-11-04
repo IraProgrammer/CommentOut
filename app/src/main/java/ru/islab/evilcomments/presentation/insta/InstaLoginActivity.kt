@@ -19,18 +19,13 @@ import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.data.AppPreferences
 import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_SAFE
-import ru.islab.evilcomments.domain.Follow
+import ru.islab.evilcomments.domain.InstaUser
 import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
-import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
-import com.google.android.play.core.appupdate.AppUpdateManager
 import ru.islab.evilcomments.App
-import ru.islab.evilcomments.BuildConfig
 import ru.islab.evilcomments.R
-import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_ADULT
-import ru.islab.evilcomments.data.AppPreferences.Companion.VERSION_CODE
 import ru.islab.evilcomments.di.module.InstaLoginModule
 import javax.inject.Inject
 
@@ -59,7 +54,7 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.islab.evilcomments.R.layout.activity_insta_login)
 
-        if (!prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
+        if (!prefs.getBoolean(AppPreferences.NEED_INSTA_NEW_GAME)) {
             val intent = Intent(baseContext, GameActivity::class.java)
             startActivity(intent)
             finish()
@@ -99,37 +94,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
             .into(logoGif)
 
         when {
-            prefs.getBoolean(SHOW_ADULT) -> {
-                val l = layoutInflater.inflate(
-                    R.layout.dialog_adult,
-                    null
-                )
-
-                val tv = l.findViewById<TextView>(R.id.tvAdultText)
-                val btnExit = l.findViewById<Button>(R.id.btnExit)
-                val btnAgree = l.findViewById<Button>(R.id.btnAgree)
-
-                val dialog = AlertDialog.Builder(this)
-                    .setView(l)
-                    .setCancelable(false)
-                    .create()
-
-                dialog.window?.setBackgroundDrawableResource(R.color.transparent)
-                dialog.show()
-
-                tv.text =
-                    "Используя данное приложение, Вы действуете от своего имени и несёте полную ответственность за возможные последствия." +
-                            "\nЗадания в игре не являются призывом к действию и созданы исключительно в развлекательных целях, " +
-                            "могут содержать ненормативную лексику и грубый юмор.\n" +
-                            "Если Вы считаете задание оскорбительным, откажитесь от его выполнения."
-
-                btnAgree.setOnClickListener { v ->
-                    prefs.putBoolean(SHOW_ADULT, false)
-                    showSafetlyDialog()
-                    dialog.dismiss()
-                }
-                btnExit.setOnClickListener { v -> finish() }
-            }
             prefs.getBoolean(SHOW_SAFE) -> showSafetlyDialog()
             else -> initializeWebView()
         }
@@ -282,12 +246,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                         val peoples = list.subList(1, list.size)
 
-                        val follows = ArrayList<Follow>()
+                        val follows = ArrayList<InstaUser>()
 
                         for (i in peoples.indices) {
 
                             val units = peoples[i].split("\"")
-                            val follow = Follow(0, "", "")
+                            val follow = InstaUser(0, "", "")
 
                             for (j in units.indices) {
                                 if (units[j].equals(" src=\\")) {

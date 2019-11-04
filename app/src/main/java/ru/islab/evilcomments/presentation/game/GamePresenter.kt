@@ -17,10 +17,7 @@ import ru.islab.evilcomments.data.AppPreferences.Companion.PUNISHMENT_SET
 import ru.islab.evilcomments.data.AppPreferences.Companion.VK_GAME
 import ru.islab.evilcomments.data.AppPreferences.Companion.VK_USERS_SET
 import ru.islab.evilcomments.di.module.GameModule
-import ru.islab.evilcomments.domain.EvilComment
-import ru.islab.evilcomments.domain.Follow
-import ru.islab.evilcomments.domain.Punishment
-import ru.islab.evilcomments.domain.VKUser
+import ru.islab.evilcomments.domain.*
 import ru.islab.evilcomments.presentation.OneModel
 import java.util.*
 import javax.inject.Inject
@@ -45,7 +42,7 @@ class GamePresenter : MvpPresenter<GameView>() {
 
     private var maxRoundCount = 6
 
-    private var oneModel = OneModel("", "", "", "")
+    private var oneModel = OneModel("", "", "", "", "")
 
     private var compositeDisposable = CompositeDisposable()
 
@@ -76,19 +73,19 @@ class GamePresenter : MvpPresenter<GameView>() {
         if (prefs.getBoolean(VK_GAME)) {
             function = Single.zip(
                 db.vkUserDao().getAll(),
-                db.commentDao().getAll(),
-                db.punishmentDao().getAll(),
-                Function3<List<VKUser>, List<EvilComment>, List<Punishment>, OneModel> { VKuser, comments, punishments ->
+                db.vkCommentDao().getAll(),
+                db.vkPunishmentDao().getAll(),
+                Function3<List<VKUser>, List<VKEvilComment>, List<VKPunishment>, OneModel> { VKuser, comments, punishments ->
                     createOneModelFromVK(VKuser, comments, punishments)
                 }
             )
         } else {
             function = Single.zip(
-                db.followDao().getAll(),
+                db.instaUserDao().getAll(),
                 db.commentDao().getAll(),
                 db.punishmentDao().getAll(),
-                Function3<List<Follow>, List<EvilComment>, List<Punishment>, OneModel> { follows, comments, punishments ->
-                    createOneModelFromInsta(follows, comments, punishments)
+                Function3<List<InstaUser>, List<EvilComment>, List<Punishment>, OneModel> { instaUserDao, comments, punishments ->
+                    createOneModelFromInsta(instaUserDao, comments, punishments)
                 }
             )
         }
@@ -111,27 +108,39 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     private fun createOneModelFromInsta(
-        follows: List<Follow>,
+        instaUsers: List<InstaUser>,
         comments: List<EvilComment>,
         punishments: List<Punishment>
     ): OneModel {
-        val follow = getRandomUniqueName(follows)
+        val instaUser = getRandomUniqueName(instaUsers)
         val comment = comments[getRandomUniqueInt(COMMENTS_SET, comments.size)]
         val punishment = punishments[getRandomUniqueInt(PUNISHMENT_SET, punishments.size)]
 
-        return OneModel(follow.username, follow.profilePictureUrl, comment.text, punishment.text)
+        return OneModel(
+            instaUser.username,
+            instaUser.profilePictureUrl,
+            comment.text,
+            punishment.text,
+            instaUser.username
+        )
     }
 
     private fun createOneModelFromVK(
         VKUsers: List<VKUser>,
-        comments: List<EvilComment>,
-        punishments: List<Punishment>
+        comments: List<VKEvilComment>,
+        punishments: List<VKPunishment>
     ): OneModel {
         val vkUser = getRandomUniqueName(VKUsers)
         val comment = comments[getRandomUniqueInt(COMMENTS_SET, comments.size)]
         val punishment = punishments[getRandomUniqueInt(PUNISHMENT_SET, punishments.size)]
 
-        return OneModel(vkUser.name, vkUser.photo, comment.text, punishment.text)
+        return OneModel(
+            vkUser.name,
+            vkUser.photo,
+            comment.text,
+            punishment.text,
+            vkUser.id.toString()
+        )
     }
 
     private fun getRandomUniqueInt(key: String, bound: Int): Int {
@@ -177,7 +186,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         return user
     }
 
-    private fun getRandomUniqueName(users: List<Follow>): Follow {
+    private fun getRandomUniqueName(users: List<InstaUser>): InstaUser {
         var set = prefs.getSet(INSTA_USERS_SET)
 
         if (set.size == users.size) {
@@ -254,7 +263,11 @@ class GamePresenter : MvpPresenter<GameView>() {
         }
 
         if (round == maxRoundCount) {
-            prefs.putBoolean(AppPreferences.NEED_NEW_GAME, true)
+            if (prefs.getBoolean(VK_GAME)) {
+                prefs.putBoolean(AppPreferences.NEED_VK_NEW_GAME, true)
+            } else {
+                prefs.putBoolean(AppPreferences.NEED_INSTA_NEW_GAME, true)
+            }
             viewState.showGameOverDialog()
         } else {
             round++
@@ -268,7 +281,11 @@ class GamePresenter : MvpPresenter<GameView>() {
         canEnable = false
         enableButtonWithDelay()
 
-        prefs.putBoolean(AppPreferences.NEED_NEW_GAME, false)
+        if (prefs.getBoolean(VK_GAME)) {
+            prefs.putBoolean(AppPreferences.NEED_VK_NEW_GAME, false)
+        } else {
+            prefs.putBoolean(AppPreferences.NEED_INSTA_NEW_GAME, false)
+        }
 
         round = 1
         points = 0

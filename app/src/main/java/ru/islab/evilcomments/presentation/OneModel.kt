@@ -8,5 +8,7 @@ data class OneModel(
 
     var comment: String,
 
-    var punishment: String
+    var punishment: String,
+
+    var link: String
 )

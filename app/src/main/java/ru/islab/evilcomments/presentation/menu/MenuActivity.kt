@@ -3,42 +3,29 @@ package ru.islab.evilcomments.presentation.menu
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.vk.api.sdk.*
-import com.vk.api.sdk.auth.VKAccessToken
-import com.vk.api.sdk.auth.VKAuthCallback
-import com.vk.api.sdk.auth.VKScope
-import com.vk.api.sdk.exceptions.VKApiCodes
-import com.vk.api.sdk.exceptions.VKApiExecutionException
-import com.vk.api.sdk.utils.VKUtils
-import com.vk.api.sdk.utils.log.DefaultApiLogger
-import com.vk.api.sdk.utils.log.Logger
-import kotlinx.android.synthetic.main.activity_choise.*
-import kotlinx.android.synthetic.main.activity_insta_login.*
 import kotlinx.android.synthetic.main.activity_menu.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.BuildConfig
 import ru.islab.evilcomments.data.AppPreferences
-import ru.islab.evilcomments.data.AppPreferences.Companion.NEED_NEW_GAME
-import ru.islab.evilcomments.di.module.GameModule
+import ru.islab.evilcomments.data.AppPreferences.Companion.NEED_INSTA_NEW_GAME
 import ru.islab.evilcomments.di.module.MenuModule
-import ru.islab.evilcomments.di.module.SignInModule
-import ru.islab.evilcomments.requests.VKFriendsRequest
-import ru.islab.evilcomments.domain.VKUser
 import ru.islab.evilcomments.presentation.game.GameActivity
 import ru.islab.evilcomments.presentation.sign_in.SignInActivity
 import java.lang.Exception
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import ru.islab.evilcomments.R
+import ru.islab.evilcomments.data.AppPreferences.Companion.NEED_VK_NEW_GAME
 import ru.islab.evilcomments.presentation.creators.CreatorsActivity
 
 
@@ -74,10 +61,48 @@ class MenuActivity : MvpAppCompatActivity(), MenuView {
             }
         }
 
-        if (BuildConfig.VERSION_CODE > prefs.getInt(AppPreferences.VERSION_CODE)) {
-            presenter.putDataToDb()
-        } else {
-            initUI()
+        when {
+            prefs.getBoolean(AppPreferences.SHOW_ADULT) -> {
+                val l = layoutInflater.inflate(
+                    R.layout.dialog_adult,
+                    null
+                )
+
+                val tv = l.findViewById<TextView>(R.id.tvAdultText)
+                val btnExit = l.findViewById<Button>(R.id.btnExit)
+                val btnAgree = l.findViewById<Button>(R.id.btnAgree)
+
+                val dialog = AlertDialog.Builder(this)
+                    .setView(l)
+                    .setCancelable(false)
+                    .create()
+
+                dialog.window?.setBackgroundDrawableResource(R.color.transparent)
+                dialog.show()
+
+                tv.text =
+                    "Используя данное приложение, Вы действуете от своего имени и несёте полную ответственность за возможные последствия." +
+                            "\nЗадания в игре не являются призывом к действию и созданы исключительно в развлекательных целях, " +
+                            "могут содержать ненормативную лексику и грубый юмор.\n" +
+                            "Если Вы считаете задание оскорбительным, откажитесь от его выполнения."
+
+                btnAgree.setOnClickListener { v ->
+                    prefs.putBoolean(AppPreferences.SHOW_ADULT, false)
+                    if (BuildConfig.VERSION_CODE > prefs.getInt(AppPreferences.VERSION_CODE)) {
+                        presenter.putDataToDb()
+                    } else {
+                        initUI()
+                    }
+                    dialog.dismiss()
+                }
+                btnExit.setOnClickListener { v -> finish() }
+            }
+            BuildConfig.VERSION_CODE > prefs.getInt(AppPreferences.VERSION_CODE) -> {
+                presenter.putDataToDb()
+            }
+            else -> {
+                initUI()
+            }
         }
 
         btnNewGame.setOnClickListener { startNewGame() }
@@ -88,7 +113,8 @@ class MenuActivity : MvpAppCompatActivity(), MenuView {
 
     override fun initUI() {
         llMenu.visibility = View.VISIBLE
-        btnContinue.isEnabled = !prefs.getBoolean(NEED_NEW_GAME)
+        btnContinue.isEnabled =
+            !(prefs.getBoolean(NEED_INSTA_NEW_GAME) && prefs.getBoolean(NEED_VK_NEW_GAME))
     }
 
     override fun saveVersionCode() {
@@ -107,9 +133,12 @@ class MenuActivity : MvpAppCompatActivity(), MenuView {
     }
 
     override fun sendOffer() {
-        val intent = Intent(Intent.ACTION_SENDTO) // it not ACTION_SEND
-        intent.putExtra(Intent.EXTRA_SUBJECT, "Задание")
-        //intent.putExtra(Intent.EXTRA_TEXT, "Body of email")
+        val intent = Intent(Intent.ACTION_SENDTO)
+        intent.putExtra(Intent.EXTRA_SUBJECT, "EC: Задания")
+        intent.putExtra(
+            Intent.EXTRA_TEXT,
+            "Форма отправки:\n1. Страна, город* :\n2. Никнейм (до 20 символов)* :\n3. Ссылка на соц.сеть:\n4.Задания* :\nПоля с обозначением * обязательны для заполнения."
+        )
         intent.data = Uri.parse("mailto:is.lab.official@gmail.com")
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)

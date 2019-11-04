@@ -55,7 +55,7 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
         if (VK.isLoggedIn()) {
             requestFriends()
         } else {
-            VK.login(this, arrayListOf(VKScope.FRIENDS))
+            VK.login(this, arrayListOf(VKScope.FRIENDS, VKScope.WALL))
         }
     }
 
@@ -74,8 +74,6 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
     }
 
     private fun requestFriends() {
-        //var pd = ProgressDialog(baseContext)
-        //pd.show()
         VK.execute(VKFriendsRequest(), object : VKApiCallback<List<VKUser>> {
             override fun success(result: List<VKUser>) {
                 if (!isFinishing && !result.isEmpty()) {
@@ -84,7 +82,6 @@ class SignInActivity : MvpAppCompatActivity(), SignInView {
             }
 
             override fun fail(error: VKApiExecutionException) {
-                //pd.dismiss()
                 Toast.makeText(baseContext, error.errorMsg, Toast.LENGTH_LONG).show()
             }
         })

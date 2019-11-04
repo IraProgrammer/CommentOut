@@ -15,7 +15,4 @@ interface CommentDao {
 
     @Query("SELECT * FROM EvilComment")
     fun getAll(): Single<List<EvilComment>>
-
-    @Query("SELECT * FROM EvilComment")
-    fun getAllS(): List<EvilComment>
 }

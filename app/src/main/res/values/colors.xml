@@ -10,4 +10,11 @@
 
     <color name="transparent1">#26FFFFFF</color>
     <color name="transparent2">#87FFFFFF</color>
+
+    //buttons
+    <color name="btn1">#5066d9</color>
+    <color name="btn2_enabled">#6e55b2</color>
+    <color name="btn2_disabled">#c4c4c4</color>
+    <color name="btn3">#9c3d79</color>
+    <color name="btn4">#bf2a4c</color>
 </resources>

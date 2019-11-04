@@ -10,6 +10,7 @@ import ru.islab.evilcomments.data.database.AppDatabase
 import ru.islab.evilcomments.di.module.SignInModule
 import ru.islab.evilcomments.domain.DataHelper
 import ru.islab.evilcomments.domain.VKUser
+import java.util.*
 import javax.inject.Inject
 
 @InjectViewState
@@ -29,7 +30,7 @@ class SignInPresenter : MvpPresenter<SignInView>() {
 
     fun saveFollowsToDb(follows: List<VKUser>) {
         compositeDisposable.add(
-            db.vkUserDao().insert(follows.shuffled())
+            db.vkUserDao().insert(follows.shuffled(Random()))
                 .startWith(db.vkUserDao().delete())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

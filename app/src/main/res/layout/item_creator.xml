@@ -3,4 +3,8 @@
     android:id="@+id/tvName"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical" />
+    android:layout_marginBottom="16dp"
+    android:fontFamily="@font/text_all"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:textSize="@dimen/dialog_title" />

@@ -6,16 +6,16 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
-import ru.islab.evilcomments.domain.Follow
+import ru.islab.evilcomments.domain.InstaUser
 
 @Dao
-interface FollowDao {
+interface InstaUserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(follows: List<Follow>): Completable
+    fun insert(instaUsers: List<InstaUser>): Completable
 
-    @Query("DELETE FROM Follow")
+    @Query("DELETE FROM InstaUser")
     fun delete(): Completable
 
-    @Query("SELECT * FROM Follow")
-    fun getAll(): Single<List<Follow>>
+    @Query("SELECT * FROM InstaUser")
+    fun getAll(): Single<List<InstaUser>>
 }

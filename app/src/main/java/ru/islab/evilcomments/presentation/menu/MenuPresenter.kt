@@ -32,6 +32,8 @@ class MenuPresenter : MvpPresenter<MenuView>() {
         compositeDisposable.add(
             db.commentDao().insert(dataHelper.commentsList)
                 .andThen(db.punishmentDao().insert(dataHelper.punishmentsList))
+                .andThen(db.vkCommentDao().insert(dataHelper.vkCommentsList))
+                .andThen(db.vkPunishmentDao().insert(dataHelper.vkPunishmentsList))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({

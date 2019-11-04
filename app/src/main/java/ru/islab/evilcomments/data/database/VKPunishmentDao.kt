@@ -6,16 +6,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
-import ru.islab.evilcomments.domain.VKUser
+import ru.islab.evilcomments.domain.Punishment
+import ru.islab.evilcomments.domain.VKPunishment
 
 @Dao
-interface VKUserDao {
+interface VKPunishmentDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(follows: List<VKUser>): Completable
+    fun insert(punishments: List<VKPunishment>): Completable
 
-    @Query("DELETE FROM VKUser")
-    fun delete(): Completable
-
-    @Query("SELECT * FROM VKUser")
-    fun getAll(): Single<List<VKUser>>
+    @Query("SELECT * FROM VKPunishment")
+    fun getAll(): Single<List<VKPunishment>>
 }

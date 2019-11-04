@@ -9,21 +9,23 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat.getSystemService
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import com.vk.api.sdk.utils.VKUtils
 import kotlinx.android.synthetic.main.activity_game.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.App
 import ru.islab.evilcomments.R
 import ru.islab.evilcomments.data.AppPreferences
+import ru.islab.evilcomments.data.AppPreferences.Companion.VK_GAME
 import ru.islab.evilcomments.di.module.GameModule
 import ru.islab.evilcomments.presentation.OneModel
 import ru.islab.evilcomments.presentation.menu.MenuActivity
-import ru.islab.evilcomments.presentation.sign_in.SignInActivity
 import javax.inject.Inject
 
 
@@ -65,7 +67,10 @@ class GameActivity : MvpAppCompatActivity(), GameView {
             showBackToMenuDialog()
         }
 
-        if (prefs.getBoolean(AppPreferences.NEED_NEW_GAME)) {
+        if ((!prefs.getBoolean(VK_GAME) && prefs.getBoolean(AppPreferences.NEED_INSTA_NEW_GAME)) || prefs.getBoolean(
+                VK_GAME
+            ) && prefs.getBoolean(AppPreferences.NEED_VK_NEW_GAME)
+        ) {
             gamePresenter.startNewGame()
         } else {
             gamePresenter.restoreGame()
@@ -203,11 +208,11 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         loadPicture(oneModel.profilePictureUrl)
 
         ivAvatar.setOnClickListener { v ->
-            openUserInInsta(oneModel.username)
+            openUserInInsta(oneModel.link)
         }
 
         tvUsername.setOnClickListener { v ->
-            openUserInInsta(oneModel.username)
+            openUserInInsta(oneModel.link)
         }
     }
 
@@ -238,19 +243,29 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         btn.setOnClickListener { v -> dialog.dismiss() }
     }
 
-    private fun openUserInInsta(username: String) {
-        val uri = Uri.parse("http://instagram.com/$username")
-        val insta = Intent(Intent.ACTION_VIEW, uri)
-        insta.setPackage("com.instagram.android")
+    private fun openUserInInsta(link: String) {
+        var uri = Uri.parse("http://vk.com/$link")
+        var intent = Intent(Intent.ACTION_VIEW, uri)
+        var packageName = "com.vkontakte.android"
 
-        if (hasInsta(baseContext, insta)) {
-            startActivity(insta)
+        if (!prefs.getBoolean(VK_GAME)) {
+            uri = Uri.parse("http://instagram.com/$link")
+            intent = Intent(Intent.ACTION_VIEW, uri)
+            packageName = "com.instagram.android"
+        }
+
+        intent.setPackage(packageName)
+
+        if (hasApp(baseContext, intent)) {
+            startActivity(intent)
         } else {
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://instagram.com/$username")))
+            startActivity(
+                Intent(Intent.ACTION_VIEW, uri)
+            )
         }
     }
 
-    private fun hasInsta(ctx: Context, intent: Intent): Boolean {
+    private fun hasApp(ctx: Context, intent: Intent): Boolean {
         val packageManager = ctx.packageManager
         val list = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
         return list.size > 0
@@ -261,9 +276,9 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         loadPicture(oneModel.profilePictureUrl)
         tvToDo.text = oneModel.comment
 
-        ivAvatar.setOnClickListener { v -> openUserInInsta(oneModel.username) }
+        ivAvatar.setOnClickListener { v -> openUserInInsta(oneModel.link) }
 
-        tvUsername.setOnClickListener { v -> openUserInInsta(oneModel.username) }
+        tvUsername.setOnClickListener { v -> openUserInInsta(oneModel.link) }
 
         copyCommentToBuffer(oneModel.comment)
     }

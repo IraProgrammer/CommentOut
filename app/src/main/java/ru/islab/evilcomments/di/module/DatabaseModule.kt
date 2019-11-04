@@ -10,6 +10,7 @@ import ru.islab.evilcomments.di.scope.PerApplication
 import javax.inject.Named
 import androidx.sqlite.db.SupportSQLiteDatabase
 import androidx.room.RoomDatabase
+import androidx.room.migration.Migration
 import ru.islab.evilcomments.domain.EvilComment
 import ru.islab.evilcomments.domain.Punishment
 import java.util.concurrent.Executors
@@ -23,7 +24,16 @@ class DatabaseModule {
     fun provideDatabase(@Named("AppContext") context: Context): AppDatabase {
 
         return Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME)
-            .fallbackToDestructiveMigration()
+            //.fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_1_2)
             .build()
+    }
+
+    val MIGRATION_1_2 = object : Migration(1, 2){
+        override fun migrate(database: SupportSQLiteDatabase) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKUser' ('id' INTEGER, 'name' TEXT, 'photo' TEXT, 'canPost' INTEGER, PRIMARY KEY('id'))")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKEvilComment' ('id' INTEGER, 'text' TEXT, PRIMARY KEY('id'))")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKPunishment' ('id' INTEGER, 'text' TEXT, PRIMARY KEY('id'))")
+        }
     }
 }

@@ -22,6 +22,12 @@ class CreatorsActivity : MvpAppCompatActivity() {
     }
 
     private fun setNames() {
-       adapter.setList(resources.getStringArray(R.array.creators).toList())
+        val creators = listOf(
+            Creator(username = "Irishka"),
+            Creator(username = "Siriasis"),
+            Creator(link = "https://vk.com/id262098433", username = "Sweet Dreams")
+        )
+
+        adapter.setList(creators)
     }
 }
