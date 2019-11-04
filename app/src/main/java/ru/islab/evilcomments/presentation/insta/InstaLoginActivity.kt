@@ -54,11 +54,6 @@ class InstaLoginActivity : MvpAppCompatActivity(),
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
         setContentView(ru.islab.evilcomments.R.layout.activity_insta_login)
 
-        if (!prefs.getBoolean(AppPreferences.NEED_INSTA_NEW_GAME)) {
-            val intent = Intent(baseContext, GameActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
         initUI()
 
         anim = AnimationUtils.loadAnimation(this, ru.islab.evilcomments.R.anim.blink)
@@ -166,12 +161,14 @@ class InstaLoginActivity : MvpAppCompatActivity(),
     }
 
     override fun startGame() {
+        prefs.putBoolean(AppPreferences.NEED_INSTA_NEW_GAME, true)
+        prefs.putBoolean(AppPreferences.NEED_VK_NEW_GAME, true)
         btnStartGame.text = "НАЧАТЬ ИГРУ!"
         btnStartGame.setOnClickListener { v ->
             progressAnimator?.removeAllListeners()
             val intent = Intent(baseContext, GameActivity::class.java)
             startActivity(intent)
-            finish()
+            finishAffinity()
         }
         btnStartGame.visibility = View.VISIBLE
         btnStartGame.startAnimation(anim)
@@ -287,6 +284,11 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
         parsingHandler.postDelayed(parsingRunnable, 30000)
 
+    }
+
+    override fun onResume() {
+        wvInsta.onResume()
+        super.onResume()
     }
 
     override fun onPause() {

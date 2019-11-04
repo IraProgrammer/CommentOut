@@ -73,6 +73,7 @@ class AppPreferences(context: Context) {
         const val SHOW_ADULT = "showAdult"
         const val SHOW_RULES = "showRules"
         const val COMMENT = "comment"
+        const val LINK = "link"
         const val PUNISHMENT = "punishment"
         const val USER_IN_CIRCLE = "user_in_circle"
         const val PHOTO = "photo"

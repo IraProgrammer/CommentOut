@@ -17,6 +17,7 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.vk.api.sdk.utils.VKUtils
 import kotlinx.android.synthetic.main.activity_game.*
+import kotlinx.android.synthetic.main.dialog_rules.*
 import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.App
@@ -233,6 +234,8 @@ class GameActivity : MvpAppCompatActivity(), GameView {
 
         val btn = l.findViewById<Button>(R.id.btnAgree)
 
+        val tv = l.findViewById<TextView>(R.id.tvRules)
+
         val dialog = AlertDialog.Builder(this)
             .setView(l)
             .create()
@@ -241,10 +244,16 @@ class GameActivity : MvpAppCompatActivity(), GameView {
         dialog.show()
 
         btn.setOnClickListener { v -> dialog.dismiss() }
+
+        if (prefs.getBoolean(VK_GAME)) {
+            tv.text = getString(R.string.rules_vk)
+        } else {
+            tv.text = getString(R.string.rules)
+        }
     }
 
     private fun openUserInInsta(link: String) {
-        var uri = Uri.parse("http://vk.com/$link")
+        var uri = Uri.parse("http://vk.com/id$link")
         var intent = Intent(Intent.ACTION_VIEW, uri)
         var packageName = "com.vkontakte.android"
 

@@ -129,7 +129,7 @@ class MenuActivity : MvpAppCompatActivity(), MenuView {
     override fun continueGame() {
         val intent = Intent(baseContext, GameActivity::class.java)
         startActivity(intent)
-        finish()
+        finishAffinity()
     }
 
     override fun sendOffer() {
@@ -137,7 +137,7 @@ class MenuActivity : MvpAppCompatActivity(), MenuView {
         intent.putExtra(Intent.EXTRA_SUBJECT, "EC: Задания")
         intent.putExtra(
             Intent.EXTRA_TEXT,
-            "Форма отправки:\n1. Страна, город* :\n2. Никнейм (до 20 символов)* :\n3. Ссылка на соц.сеть:\n4.Задания* :\nПоля с обозначением * обязательны для заполнения."
+            "Форма отправки:\n1. Страна, город* :\n2. Никнейм (до 20 символов)* :\n3. Ссылка на соц.сеть:\n4.Задания* :\n\nПоля с обозначением * обязательны для заполнения."
         )
         intent.data = Uri.parse("mailto:is.lab.official@gmail.com")
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -1,53 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/llProgress"
+        android:layout_width="match_parent"
+        android:background="@color/white"
+        android:clickable="true"
+        android:visibility="gone"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:focusable="true">
+
+        <ProgressBar
+            android:indeterminate="true"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <TextView
-        android:layout_margin="16dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="87"
+        android:layout_margin="16dp"
+        android:fontFamily="@font/text_all"
         android:gravity="center"
-        android:text="Выберите социальную сеть, из которой будут импортированы Ваши подписки/друзья"/>
+        android:text="Выберите социальную сеть, из которой будут импортированы Ваши подписки/друзья"
+        android:textSize="@dimen/start_game_button" />
 
-    <LinearLayout
-        android:layout_marginTop="156dp"
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/btnInsta"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:background="@color/colorPrimary"
+        android:fontFamily="@font/text_all"
+        android:text="INSTAGRAM"
+        android:textColor="@color/white"
+        android:textSize="@dimen/start_game_button" />
 
-        <View
-            android:layout_width="3dp"
-            android:background="@color/colorPrimary"
-            android:layout_height="match_parent"/>
-        <Button
-            android:id="@+id/btnInsta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:textStyle="bold"
-            android:text="INSTAGRAM"/>
-    </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_gravity="center_horizontal"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_height="wrap_content">
-
-        <View
-            android:layout_width="3dp"
-            android:background="@color/btn1"
-            android:layout_height="match_parent"/>
-        <Button
-            android:id="@+id/btnVk"
-            android:layout_width="wrap_content"
-            android:textStyle="bold"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:text="VK"/>
-    </LinearLayout>
+    <Button
+        android:id="@+id/btnVk"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="15"
+        android:background="@color/btn1"
+        android:fontFamily="@font/text_all"
+        android:text="VK"
+        android:textColor="@color/white"
+        android:textSize="@dimen/start_game_button" />
 
 </LinearLayout>

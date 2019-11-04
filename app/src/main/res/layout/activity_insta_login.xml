@@ -56,7 +56,7 @@
                 android:fontFamily="@font/text_all"
                 android:gravity="center_horizontal"
                 android:text="@string/please_wait"
-                android:textSize="@dimen/dialog_text" />
+                android:textSize="@dimen/start_game_button" />
 
             <ProgressBar
                 android:id="@+id/pbHorizontal"

@@ -217,6 +217,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         points = prefs.getString(AppPreferences.POINTS).toInt()
         round = prefs.getString(AppPreferences.ROUND).toInt()
 
+        oneModel.link = prefs.getString(AppPreferences.LINK)
         oneModel.comment = prefs.getString(AppPreferences.COMMENT)
         oneModel.punishment = prefs.getString(AppPreferences.PUNISHMENT)
         oneModel.username = prefs.getString(AppPreferences.USER_IN_CIRCLE)
@@ -244,6 +245,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     fun saveGame() {
+        prefs.putString(AppPreferences.LINK, oneModel.link)
         prefs.putString(AppPreferences.COMMENT, oneModel.comment)
         prefs.putString(AppPreferences.PUNISHMENT, oneModel.punishment)
         prefs.putString(AppPreferences.USER_IN_CIRCLE, oneModel.username)
