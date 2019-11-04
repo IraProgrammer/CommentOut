@@ -165,16 +165,18 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     private fun getRandomUniqueName(users: List<VKUser>): VKUser {
+        val list: MutableList<VKUser> = users.toMutableList()
+        list.shuffle()
         var set = prefs.getSet(VK_USERS_SET)
 
-        if (set.size == users.size) {
+        if (set.size == list.size) {
             set = HashSet()
             prefs.clearSet(VK_USERS_SET)
         }
 
-        var user = users[0]
+        var user = list[0]
 
-        for (us in users) {
+        for (us in list) {
             if (!set.contains(us.name)) {
                 user = us
                 break
@@ -187,16 +189,18 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     private fun getRandomUniqueName(users: List<Follow>): Follow {
+        val list: MutableList<Follow> = users.toMutableList()
+        list.shuffle()
         var set = prefs.getSet(INSTA_USERS_SET)
 
-        if (set.size == users.size) {
+        if (set.size == list.size) {
             set = HashSet()
             prefs.clearSet(INSTA_USERS_SET)
         }
 
-        var user = users[0]
+        var user = list[0]
 
-        for (us in users) {
+        for (us in list) {
             if (!set.contains(us.username)) {
                 user = us
                 break

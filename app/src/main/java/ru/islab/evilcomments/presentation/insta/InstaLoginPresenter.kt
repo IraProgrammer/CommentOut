@@ -32,7 +32,7 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
 
     fun saveFollowsToDb(instaUsers: List<Follow>) {
         compositeDisposable.add(
-            db.instaUserDao().insert(instaUsers.shuffled(Random()))
+            db.instaUserDao().insert(instaUsers)
                 .startWith(db.instaUserDao().delete())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
