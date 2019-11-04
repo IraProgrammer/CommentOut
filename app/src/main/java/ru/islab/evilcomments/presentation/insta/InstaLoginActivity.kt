@@ -19,7 +19,7 @@ import moxy.MvpAppCompatActivity
 import moxy.presenter.InjectPresenter
 import ru.islab.evilcomments.data.AppPreferences
 import ru.islab.evilcomments.data.AppPreferences.Companion.SHOW_SAFE
-import ru.islab.evilcomments.domain.InstaUser
+import ru.islab.evilcomments.domain.Follow
 import ru.islab.evilcomments.presentation.game.GameActivity
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -243,12 +243,12 @@ class InstaLoginActivity : MvpAppCompatActivity(),
 
                         val peoples = list.subList(1, list.size)
 
-                        val follows = ArrayList<InstaUser>()
+                        val follows = ArrayList<Follow>()
 
                         for (i in peoples.indices) {
 
                             val units = peoples[i].split("\"")
-                            val follow = InstaUser(0, "", "")
+                            val follow = Follow(0, "", "")
 
                             for (j in units.indices) {
                                 if (units[j].equals(" src=\\")) {

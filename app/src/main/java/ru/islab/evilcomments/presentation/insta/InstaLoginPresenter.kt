@@ -11,7 +11,7 @@ import ru.islab.evilcomments.App
 import ru.islab.evilcomments.data.database.AppDatabase
 import ru.islab.evilcomments.di.module.InstaLoginModule
 import ru.islab.evilcomments.domain.DataHelper
-import ru.islab.evilcomments.domain.InstaUser
+import ru.islab.evilcomments.domain.Follow
 import java.util.*
 import javax.inject.Inject
 
@@ -30,7 +30,7 @@ class InstaLoginPresenter : MvpPresenter<InstaLoginView>() {
         App.appComponent?.addInstaLoginComponent(InstaLoginModule())?.inject(this)
     }
 
-    fun saveFollowsToDb(instaUsers: List<InstaUser>) {
+    fun saveFollowsToDb(instaUsers: List<Follow>) {
         compositeDisposable.add(
             db.instaUserDao().insert(instaUsers.shuffled(Random()))
                 .startWith(db.instaUserDao().delete())

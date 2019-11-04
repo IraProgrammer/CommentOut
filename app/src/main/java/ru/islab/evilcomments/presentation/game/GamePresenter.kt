@@ -84,7 +84,7 @@ class GamePresenter : MvpPresenter<GameView>() {
                 db.instaUserDao().getAll(),
                 db.commentDao().getAll(),
                 db.punishmentDao().getAll(),
-                Function3<List<InstaUser>, List<EvilComment>, List<Punishment>, OneModel> { instaUserDao, comments, punishments ->
+                Function3<List<Follow>, List<EvilComment>, List<Punishment>, OneModel> { instaUserDao, comments, punishments ->
                     createOneModelFromInsta(instaUserDao, comments, punishments)
                 }
             )
@@ -108,7 +108,7 @@ class GamePresenter : MvpPresenter<GameView>() {
     }
 
     private fun createOneModelFromInsta(
-        instaUsers: List<InstaUser>,
+        instaUsers: List<Follow>,
         comments: List<EvilComment>,
         punishments: List<Punishment>
     ): OneModel {
@@ -186,7 +186,7 @@ class GamePresenter : MvpPresenter<GameView>() {
         return user
     }
 
-    private fun getRandomUniqueName(users: List<InstaUser>): InstaUser {
+    private fun getRandomUniqueName(users: List<Follow>): Follow {
         var set = prefs.getSet(INSTA_USERS_SET)
 
         if (set.size == users.size) {

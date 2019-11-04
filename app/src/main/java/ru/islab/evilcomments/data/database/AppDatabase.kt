@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import ru.islab.evilcomments.domain.*
 
 @Database(
-    entities = [InstaUser::class, VKUser::class, EvilComment::class, Punishment::class, VKEvilComment::class, VKPunishment::class],
+    entities = [Follow::class, VKUser::class, EvilComment::class, Punishment::class, VKEvilComment::class, VKPunishment::class],
     version = 2,
     exportSchema = false
 )

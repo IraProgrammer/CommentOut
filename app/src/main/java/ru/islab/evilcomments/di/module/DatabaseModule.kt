@@ -31,9 +31,9 @@ class DatabaseModule {
 
     val MIGRATION_1_2 = object : Migration(1, 2){
         override fun migrate(database: SupportSQLiteDatabase) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKUser' ('id' INTEGER, 'name' TEXT, 'photo' TEXT, 'canPost' INTEGER, PRIMARY KEY('id'))")
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKEvilComment' ('id' INTEGER, 'text' TEXT, PRIMARY KEY('id'))")
-            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKPunishment' ('id' INTEGER, 'text' TEXT, PRIMARY KEY('id'))")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKUser' ('id' INTEGER NOT NULL DEFAULT 0, 'name' TEXT NOT NULL, 'photo' TEXT NOT NULL, 'canPost' INTEGER NOT NULL, PRIMARY KEY('id'))")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKEvilComment' ('id' INTEGER NOT NULL DEFAULT 0, 'text' TEXT NOT NULL, PRIMARY KEY('id'))")
+            database.execSQL("CREATE TABLE IF NOT EXISTS 'VKPunishment' ('id' INTEGER NOT NULL DEFAULT 0, 'text' TEXT NOT NULL, PRIMARY KEY('id'))")
         }
     }
 }
